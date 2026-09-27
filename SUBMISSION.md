@@ -13,7 +13,7 @@ Track: **3, New Skills**
 
 ## Before recording the demo
 - [ ] `ryo-pulse discover` run against live RYO, with the token path confirmed
-- [ ] `ryo-pulse collect -p limit=10 --every 30` running for 1–2 days or more, so the board shows real persistence
+- [ ] `ryo-pulse collect -p top_n=20 --every 30` running for 1–2 days or more, so the board shows real persistence
 - [ ] The demo uses **live** snapshots (`data: live` on the board). Fixture output is shown only when labelled as fixture
 
 ## Optional (200 USD Social Media Award)

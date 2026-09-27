@@ -112,3 +112,44 @@ def test_bad_config_fails_fast():
                   transport=httpx.MockTransport(h))
     with pytest.raises(RyoError, match="https://"):
         RyoClient(url="app-ryochan.com/api/mcp", key="k", transport=httpx.MockTransport(h))
+
+
+UNAVAILABLE = {
+    "status": "unavailable",
+    "data": {"filters": {"limit": 5}, "candidate_count": 0, "candidates": []},
+    "availability": {"ranked_candidates": "unavailable"},
+    "warnings": ["No candidates matched the current scan filters."],
+}
+
+
+class _Fixed:
+    def __init__(self, payload):
+        self.payload = payload
+
+    def call_tool(self, name, arguments=None):
+        return self.payload
+
+
+def test_unavailable_scan_is_failed_not_absence(tmp_path):
+    """Real RYO response shape seen on 2026-09-27: status unavailable, empty candidates."""
+    snap = collect_once(_Fixed(UNAVAILABLE), ScanProfile(params={"top_n": 20}), SnapshotStore(tmp_path),
+                        tokens_path="data.candidates[].symbol", regime_path="")
+    assert not snap.ok
+    assert "unavailable" in snap.error and "No candidates" in snap.error
+
+
+def test_empty_ok_scan_is_failed_unless_allowed(tmp_path, monkeypatch):
+    payload = {"status": "ok", "data": {"candidates": []}}
+    kw = dict(tokens_path="data.candidates[].symbol", regime_path="")
+    snap = collect_once(_Fixed(payload), ScanProfile(), SnapshotStore(tmp_path / "a"), **kw)
+    assert not snap.ok and "no ranked candidates" in snap.error
+    monkeypatch.setenv("PULSE_ALLOW_EMPTY_SCANS", "1")
+    snap = collect_once(_Fixed(payload), ScanProfile(), SnapshotStore(tmp_path / "b"), **kw)
+    assert snap.ok and snap.tokens == []
+
+
+def test_real_shape_with_candidates(tmp_path):
+    payload = {"status": "ok", "data": {"candidates": [{"symbol": "sol"}, {"symbol": "INJ"}]}}
+    snap = collect_once(_Fixed(payload), ScanProfile(params={"top_n": 20}), SnapshotStore(tmp_path),
+                        tokens_path="data.candidates[].symbol", regime_path="")
+    assert snap.ok and snap.tokens == ["SOL", "INJ"]

@@ -20,7 +20,7 @@ RYO's `scan_market` answers *"who shows up **now**?"*. Agents tend to treat one 
 
 Honesty rules built into the engine:
 - **Outages are not absence.** A failed scan is stored as `ok=false` and lowers coverage. It is never read as "the token wasn't there".
-- **Only like is compared with like.** Scans with a different profile (theme, limit, ...) are *drifted* and excluded, so one profile hash means one comparable series.
+- **Only like is compared with like.** Scans with a different profile (chain, theme, top_n, ...) are *drifted* and excluded, so one profile hash means one comparable series.
 - **One appearance is still a signal.** It becomes `emerging` or `transient`, never "noise".
 - **Fixture data is labelled.** Any non-live snapshot sets `provenance` to `fixture` or `mixed` and adds a `FIXTURE_DATA` reason.
 
@@ -40,11 +40,11 @@ ryo-pulse pulse PEPE --fixture tests/fixtures/demo_window.json
 
 ```bash
 cp .env.example .env        # fill RYO_MCP_URL and RYO_MCP_KEY (never commit .env)
-ryo-pulse discover -p limit=10
+ryo-pulse discover -p top_n=20
 #   -> lists RYO tools, saves real scan_market / market_overview samples to data/catalog/,
 #      prints candidate field paths. Confirm one, then set RYO_SCAN_TOKENS_PATH
 #      (and optionally RYO_OVERVIEW_REGIME_PATH) in .env.
-ryo-pulse collect -p limit=10 --every 30        # one comparable snapshot every 30 min; Ctrl+C to stop
+ryo-pulse collect -p top_n=20 --every 30        # one comparable snapshot every 30 min; Ctrl+C to stop
 ryo-pulse profiles
 ryo-pulse board
 ryo-pulse pulse BTC --save results/btc.json

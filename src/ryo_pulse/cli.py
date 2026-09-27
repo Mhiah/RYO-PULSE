@@ -200,6 +200,11 @@ def cmd_discover(args) -> int:
         sample = client.call_tool(name, params)
         (out / f"{name}.sample.json").write_text(json.dumps(sample, indent=2), encoding="utf-8")
         console.print(f"\n[bold]{name}[/] sample saved to data/catalog/{name}.sample.json")
+        if isinstance(sample, dict):
+            if sample.get("status"):
+                console.print(f"  status: {sample['status']}")
+            for w in (sample.get("warnings") or [])[:3]:
+                console.print(f"  [yellow]warning:[/] {w}")
         for p in suggest(sample)[:15]:
             console.print(f"  candidate path: {p}")
     console.print(
