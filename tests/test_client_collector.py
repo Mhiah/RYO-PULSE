@@ -103,3 +103,12 @@ def test_tool_error_flag(tmp_path):
     h, _ = mcp_handler(tool_error=True)
     with pytest.raises(RyoError):
         client(h).call_tool("scan_market")
+
+
+def test_bad_config_fails_fast():
+    h, _ = mcp_handler()
+    with pytest.raises(RyoError, match="RYO_AUTH_HEADER"):
+        RyoClient(url="https://ryo.test/mcp", key="k", auth_header="Authorizhttps://x/mcpation",
+                  transport=httpx.MockTransport(h))
+    with pytest.raises(RyoError, match="https://"):
+        RyoClient(url="app-ryochan.com/api/mcp", key="k", transport=httpx.MockTransport(h))

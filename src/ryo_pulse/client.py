@@ -9,12 +9,14 @@ from __future__ import annotations
 import json
 import os
 import random
+import re
 import time
 from typing import Any
 
 import httpx
 
 RETRY_STATUS = {408, 425, 429, 500, 502, 503, 504}
+_HEADER_NAME = re.compile(r"^[A-Za-z0-9!#$%&'*+.^_`|~-]+$")
 PROTOCOL_VERSION = "2025-06-18"
 
 
@@ -38,7 +40,11 @@ class RyoClient:
         if not self.url:
             raise RyoError("RYO_MCP_URL is not set (see .env.example)")
         key = key if key is not None else os.environ.get("RYO_MCP_KEY", "")
-        header = auth_header or os.environ.get("RYO_AUTH_HEADER") or "Authorization"
+        if not self.url.startswith(("https://", "http://")):
+            raise RyoError(f"RYO_MCP_URL must start with https:// (got '{self.url[:40]}')")
+        header = (auth_header or os.environ.get("RYO_AUTH_HEADER") or "Authorization").strip()
+        if not _HEADER_NAME.match(header):
+            raise RyoError(f"RYO_AUTH_HEADER is not a valid header name: '{header[:40]}' (usually: Authorization)")
         scheme = auth_scheme if auth_scheme is not None else os.environ.get("RYO_AUTH_SCHEME", "Bearer")
         headers = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json"}
         if key:
@@ -57,6 +63,8 @@ class RyoClient:
         for attempt in range(self._max_retries + 1):
             try:
                 resp = self._http.post(self.url, json=payload, headers=headers)
+            except httpx.LocalProtocolError as exc:  # our request is malformed; retrying won't help
+                raise RyoError(f"invalid request to RYO: {exc}") from exc
             except (httpx.TransportError, httpx.TimeoutException) as exc:
                 last = exc
             else:
