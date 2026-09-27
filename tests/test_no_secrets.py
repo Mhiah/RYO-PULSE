@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent.parent
 SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", ".pytest_cache", "data"}
 PATTERNS = [
-    re.compile(r"(RYO_MCP_KEY|TAVILY_API_KEY|OPENROUTER_API_KEY|API_KEY|TOKEN)\s*=\s*['\"]?[A-Za-z0-9_\-]{16,}"),
+    re.compile(r"(RYO_MCP_KEY|TAVILY_API_KEY|OPENROUTER_API_KEY|API_KEY|TOKEN)[ \t]*=[ \t]*['\"]?[A-Za-z0-9_\-]{16,}"),
     re.compile(r"\b(sk-[A-Za-z0-9]{20,}|tvly-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{30,})\b"),
 ]
 
