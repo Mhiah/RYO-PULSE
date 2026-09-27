@@ -1,0 +1,169 @@
+{
+  "$defs": {
+    "PulseThresholds": {
+      "properties": {
+        "min_valid": {
+          "default": 3,
+          "description": "Comparable successful scans needed to judge",
+          "minimum": 1,
+          "title": "Min Valid",
+          "type": "integer"
+        },
+        "min_coverage": {
+          "default": 0.6,
+          "description": "valid / total below this -> insufficient",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Min Coverage",
+          "type": "number"
+        },
+        "persistent_ratio": {
+          "default": 0.6,
+          "description": "hits / valid needed for persistent",
+          "exclusiveMinimum": 0,
+          "maximum": 1,
+          "title": "Persistent Ratio",
+          "type": "number"
+        },
+        "persistent_min_hits": {
+          "default": 3,
+          "minimum": 1,
+          "title": "Persistent Min Hits",
+          "type": "integer"
+        }
+      },
+      "title": "PulseThresholds",
+      "type": "object"
+    },
+    "ScanProfile": {
+      "description": "What was scanned. Only snapshots with the same profile hash are comparable.",
+      "properties": {
+        "tool": {
+          "default": "scan_market",
+          "title": "Tool",
+          "type": "string"
+        },
+        "params": {
+          "additionalProperties": true,
+          "title": "Params",
+          "type": "object"
+        }
+      },
+      "title": "ScanProfile",
+      "type": "object"
+    },
+    "Snapshot": {
+      "description": "One scan_market call, normalised. A failed call is still a snapshot (ok=False).",
+      "properties": {
+        "snapshot_id": {
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "profile": {
+          "$ref": "#/$defs/ScanProfile"
+        },
+        "ok": {
+          "default": true,
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        },
+        "tokens": {
+          "description": "Ranked symbols, best first",
+          "items": {
+            "type": "string"
+          },
+          "title": "Tokens",
+          "type": "array"
+        },
+        "source": {
+          "default": "live",
+          "enum": [
+            "live",
+            "fixture"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "context": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "e.g. market_overview regime",
+          "title": "Context",
+          "type": "object"
+        },
+        "raw_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Raw Sha256"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "captured_at",
+        "profile"
+      ],
+      "title": "Snapshot",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "token": {
+      "title": "Token",
+      "type": "string"
+    },
+    "snapshots": {
+      "items": {
+        "$ref": "#/$defs/Snapshot"
+      },
+      "title": "Snapshots",
+      "type": "array"
+    },
+    "profile_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Profile to judge against. Default: profile of the newest successful snapshot.",
+      "title": "Profile Hash"
+    },
+    "thresholds": {
+      "$ref": "#/$defs/PulseThresholds"
+    }
+  },
+  "required": [
+    "token",
+    "snapshots"
+  ],
+  "title": "PulseRequest",
+  "type": "object"
+}

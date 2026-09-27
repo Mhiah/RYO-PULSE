@@ -1,0 +1,480 @@
+{
+  "name": "scan_persistence",
+  "description": "Read-only. Given a token and a window of scan_market snapshots, report whether the token keeps showing up under the same scan profile: persistent, emerging, transient, absent or insufficient. Failed or drifted scans lower coverage and never count as absence. Deterministic, with a replay_hash. No trading, no price prediction.",
+  "inputSchema": {
+    "$defs": {
+      "PulseThresholds": {
+        "properties": {
+          "min_valid": {
+            "default": 3,
+            "description": "Comparable successful scans needed to judge",
+            "minimum": 1,
+            "title": "Min Valid",
+            "type": "integer"
+          },
+          "min_coverage": {
+            "default": 0.6,
+            "description": "valid / total below this -> insufficient",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Min Coverage",
+            "type": "number"
+          },
+          "persistent_ratio": {
+            "default": 0.6,
+            "description": "hits / valid needed for persistent",
+            "exclusiveMinimum": 0,
+            "maximum": 1,
+            "title": "Persistent Ratio",
+            "type": "number"
+          },
+          "persistent_min_hits": {
+            "default": 3,
+            "minimum": 1,
+            "title": "Persistent Min Hits",
+            "type": "integer"
+          }
+        },
+        "title": "PulseThresholds",
+        "type": "object"
+      },
+      "ScanProfile": {
+        "description": "What was scanned. Only snapshots with the same profile hash are comparable.",
+        "properties": {
+          "tool": {
+            "default": "scan_market",
+            "title": "Tool",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          }
+        },
+        "title": "ScanProfile",
+        "type": "object"
+      },
+      "Snapshot": {
+        "description": "One scan_market call, normalised. A failed call is still a snapshot (ok=False).",
+        "properties": {
+          "snapshot_id": {
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "captured_at": {
+            "format": "date-time",
+            "title": "Captured At",
+            "type": "string"
+          },
+          "profile": {
+            "$ref": "#/$defs/ScanProfile"
+          },
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Error"
+          },
+          "tokens": {
+            "description": "Ranked symbols, best first",
+            "items": {
+              "type": "string"
+            },
+            "title": "Tokens",
+            "type": "array"
+          },
+          "source": {
+            "default": "live",
+            "enum": [
+              "live",
+              "fixture"
+            ],
+            "title": "Source",
+            "type": "string"
+          },
+          "context": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "e.g. market_overview regime",
+            "title": "Context",
+            "type": "object"
+          },
+          "raw_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Raw Sha256"
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "captured_at",
+          "profile"
+        ],
+        "title": "Snapshot",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "token": {
+        "title": "Token",
+        "type": "string"
+      },
+      "snapshots": {
+        "items": {
+          "$ref": "#/$defs/Snapshot"
+        },
+        "title": "Snapshots",
+        "type": "array"
+      },
+      "profile_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "description": "Profile to judge against. Default: profile of the newest successful snapshot.",
+        "title": "Profile Hash"
+      },
+      "thresholds": {
+        "$ref": "#/$defs/PulseThresholds"
+      }
+    },
+    "required": [
+      "token",
+      "snapshots"
+    ],
+    "title": "PulseRequest",
+    "type": "object"
+  },
+  "outputSchema": {
+    "$defs": {
+      "Counts": {
+        "properties": {
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "integer"
+          },
+          "failed": {
+            "title": "Failed",
+            "type": "integer"
+          },
+          "drifted": {
+            "title": "Drifted",
+            "type": "integer"
+          },
+          "hits": {
+            "title": "Hits",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "total",
+          "valid",
+          "failed",
+          "drifted",
+          "hits"
+        ],
+        "title": "Counts",
+        "type": "object"
+      },
+      "PulseStatus": {
+        "enum": [
+          "persistent",
+          "emerging",
+          "transient",
+          "absent",
+          "insufficient"
+        ],
+        "title": "PulseStatus",
+        "type": "string"
+      },
+      "PulseThresholds": {
+        "properties": {
+          "min_valid": {
+            "default": 3,
+            "description": "Comparable successful scans needed to judge",
+            "minimum": 1,
+            "title": "Min Valid",
+            "type": "integer"
+          },
+          "min_coverage": {
+            "default": 0.6,
+            "description": "valid / total below this -> insufficient",
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Min Coverage",
+            "type": "number"
+          },
+          "persistent_ratio": {
+            "default": 0.6,
+            "description": "hits / valid needed for persistent",
+            "exclusiveMinimum": 0,
+            "maximum": 1,
+            "title": "Persistent Ratio",
+            "type": "number"
+          },
+          "persistent_min_hits": {
+            "default": 3,
+            "minimum": 1,
+            "title": "Persistent Min Hits",
+            "type": "integer"
+          }
+        },
+        "title": "PulseThresholds",
+        "type": "object"
+      },
+      "Reason": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "detail"
+        ],
+        "title": "Reason",
+        "type": "object"
+      },
+      "Sighting": {
+        "properties": {
+          "snapshot_id": {
+            "title": "Snapshot Id",
+            "type": "string"
+          },
+          "captured_at": {
+            "format": "date-time",
+            "title": "Captured At",
+            "type": "string"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "snapshot_id",
+          "captured_at",
+          "rank"
+        ],
+        "title": "Sighting",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "spec_version": {
+        "default": "pulse/1",
+        "title": "Spec Version",
+        "type": "string"
+      },
+      "token": {
+        "title": "Token",
+        "type": "string"
+      },
+      "status": {
+        "$ref": "#/$defs/PulseStatus"
+      },
+      "profile_hash": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Profile Hash"
+      },
+      "counts": {
+        "$ref": "#/$defs/Counts"
+      },
+      "coverage": {
+        "description": "valid / total snapshots in the window",
+        "title": "Coverage",
+        "type": "number"
+      },
+      "hit_ratio": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "description": "hits / valid, None when no valid snapshots",
+        "title": "Hit Ratio"
+      },
+      "current_streak": {
+        "description": "Consecutive valid snapshots, newest backwards, containing the token",
+        "title": "Current Streak",
+        "type": "integer"
+      },
+      "first_seen": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "First Seen"
+      },
+      "last_seen": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Last Seen"
+      },
+      "window_start": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Window Start"
+      },
+      "window_end": {
+        "anyOf": [
+          {
+            "format": "date-time",
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Window End"
+      },
+      "best_rank": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Best Rank"
+      },
+      "sightings": {
+        "items": {
+          "$ref": "#/$defs/Sighting"
+        },
+        "title": "Sightings",
+        "type": "array"
+      },
+      "context": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "title": "Context",
+        "type": "object"
+      },
+      "provenance": {
+        "enum": [
+          "live",
+          "fixture",
+          "mixed",
+          "none"
+        ],
+        "title": "Provenance",
+        "type": "string"
+      },
+      "reasons": {
+        "items": {
+          "$ref": "#/$defs/Reason"
+        },
+        "title": "Reasons",
+        "type": "array"
+      },
+      "thresholds": {
+        "$ref": "#/$defs/PulseThresholds"
+      },
+      "snapshot_ids": {
+        "description": "Every snapshot in the request, oldest first (for replay)",
+        "items": {
+          "type": "string"
+        },
+        "title": "Snapshot Ids",
+        "type": "array"
+      },
+      "replay_hash": {
+        "title": "Replay Hash",
+        "type": "string"
+      }
+    },
+    "required": [
+      "token",
+      "status",
+      "profile_hash",
+      "counts",
+      "coverage",
+      "hit_ratio",
+      "current_streak",
+      "first_seen",
+      "last_seen",
+      "window_start",
+      "window_end",
+      "best_rank",
+      "sightings",
+      "provenance",
+      "reasons",
+      "thresholds",
+      "snapshot_ids",
+      "replay_hash"
+    ],
+    "title": "PulseResult",
+    "type": "object"
+  },
+  "annotations": {
+    "readOnlyHint": true,
+    "idempotentHint": true,
+    "openWorldHint": false
+  }
+}

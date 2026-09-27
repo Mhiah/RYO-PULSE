@@ -30,3 +30,7 @@ Thumbs.db
 desktop.ini
 .vscode/
 .idea/
+
+# RYO Pulse local snapshot store (live data; commit only if you mean to)
+data/snapshots/
+data/catalog/

@@ -1,0 +1,144 @@
+{
+  "_note": "SYNTHETIC FIXTURE for tests and the offline demo. Not live RYO data; every snapshot loads with source='fixture'.",
+  "snapshots": [
+    {
+      "snapshot_id": "fx-00",
+      "captured_at": "2026-09-28T00:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "tokens": [
+        "BTC",
+        "SOL",
+        "WIF",
+        "ETH"
+      ],
+      "context": {
+        "regime": "neutral"
+      }
+    },
+    {
+      "snapshot_id": "fx-01",
+      "captured_at": "2026-09-28T01:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "tokens": [
+        "BTC",
+        "SOL",
+        "WIF"
+      ],
+      "context": {
+        "regime": "neutral"
+      }
+    },
+    {
+      "snapshot_id": "fx-02",
+      "captured_at": "2026-09-28T02:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "tokens": [
+        "BTC",
+        "ETH",
+        "SOL"
+      ],
+      "context": {
+        "regime": "neutral"
+      }
+    },
+    {
+      "snapshot_id": "fx-03",
+      "captured_at": "2026-09-28T03:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "ok": false,
+      "error": "HTTP 503 from RYO (fixture)"
+    },
+    {
+      "snapshot_id": "fx-04",
+      "captured_at": "2026-09-28T04:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "tokens": [
+        "BTC",
+        "SOL",
+        "ETH"
+      ],
+      "context": {
+        "regime": "neutral"
+      }
+    },
+    {
+      "snapshot_id": "fx-05",
+      "captured_at": "2026-09-28T05:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10,
+          "theme": "ai"
+        }
+      },
+      "tokens": [
+        "FET",
+        "TAO"
+      ],
+      "context": {
+        "regime": "neutral"
+      }
+    },
+    {
+      "snapshot_id": "fx-06",
+      "captured_at": "2026-09-28T06:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "tokens": [
+        "BTC",
+        "SOL",
+        "PEPE"
+      ],
+      "context": {
+        "regime": "risk-on"
+      }
+    },
+    {
+      "snapshot_id": "fx-07",
+      "captured_at": "2026-09-28T07:00:00Z",
+      "profile": {
+        "tool": "scan_market",
+        "params": {
+          "limit": 10
+        }
+      },
+      "tokens": [
+        "PEPE",
+        "BTC",
+        "SOL"
+      ],
+      "context": {
+        "regime": "risk-on"
+      }
+    }
+  ]
+}
