@@ -58,6 +58,7 @@ The adapter reads **only field paths you confirmed from a real response**. Nothi
 ```bash
 ryo-pulse serve                      # opens http://127.0.0.1:8765 (landing) → /board (dashboard)
 ryo-pulse serve --fixture tests/fixtures/demo_window.json   # offline demo (labelled FIXTURE DATA)
+ryo-pulse serve --lan                # also open it from a phone on the same Wi-Fi (prints the address)
 ```
 
 ![Landing page, night mode](docs/landing.png)

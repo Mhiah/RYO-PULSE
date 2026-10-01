@@ -6,7 +6,7 @@
   ryo-pulse pulse TOKEN [--profile H | --fixture F] [--last N] [--json] [--save F]
   ryo-pulse board   [--profile H | --fixture F] [--last N]         classify every token seen
   ryo-pulse replay  RESULT.json [--fixture F]     recompute and check a saved result's replay_hash
-  ryo-pulse serve   [--fixture F] [--port 8765]   landing page + read-only dashboard (Track 2)
+  ryo-pulse serve   [--fixture F] [--port 8765] [--lan]   landing page + read-only dashboard (Track 2)
 """
 
 from __future__ import annotations
@@ -175,6 +175,20 @@ def cmd_replay(args) -> int:
     return 1
 
 
+def _lan_ip() -> str:
+    """This machine's address on the local network. Connecting a UDP socket sends nothing."""
+    import socket
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("10.255.255.255", 1))
+        return s.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
 def cmd_serve(args) -> int:
     import webbrowser
 
@@ -193,9 +207,11 @@ def cmd_serve(args) -> int:
                 profile = max(profiles, key=lambda h: max((p.stat().st_mtime for p in (store.root / h).rglob("*.json")), default=0)) if profiles else None
             return store.load(profile)
 
-    httpd = serve(load, host="127.0.0.1", port=args.port)
+    httpd = serve(load, host="0.0.0.0" if args.lan else "127.0.0.1", port=args.port)
     url = f"http://127.0.0.1:{args.port}/"
     console.print(f"RYO Pulse dashboard on [bold]{url}[/] (read-only; Ctrl+C to stop)")
+    if args.lan:
+        console.print(f"On your phone (same Wi-Fi): [bold]http://{_lan_ip()}:{args.port}/[/]")
     if not args.no_browser:
         webbrowser.open(url)
     try:
@@ -307,6 +323,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--fixture", help="serve a fixture JSON file instead of the store")
     p.add_argument("--port", type=int, default=8765)
     p.add_argument("--no-browser", action="store_true")
+    p.add_argument("--lan", action="store_true", help="also reachable from phones on the same Wi-Fi (read-only)")
     p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("profiles", help="list stored scan profiles")
