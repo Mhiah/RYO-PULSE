@@ -153,3 +153,17 @@ def test_real_shape_with_candidates(tmp_path):
     snap = collect_once(_Fixed(payload), ScanProfile(params={"top_n": 20}), SnapshotStore(tmp_path),
                         tokens_path="data.candidates[].symbol", regime_path="")
     assert snap.ok and snap.tokens == ["SOL", "INJ"]
+
+
+def test_find_regime_auto():
+    from ryo_pulse.collector import find_regime
+    assert find_regime({"data": {"regime": {"label": "risk-off"}, "x": {"regime": "no"}}}) == "risk-off"
+    assert find_regime({"data": {"sentiment": {"fear_greed": {"value": 72, "classification": "Greed"}}}}) == "Greed"
+    assert find_regime({"data": {"totals": [1, 2]}}) is None
+
+
+def test_collect_auto_regime_when_unset(tmp_path, monkeypatch):
+    monkeypatch.setenv("RYO_OVERVIEW_REGIME_PATH", "")
+    h, _ = mcp_handler()
+    snap = collect_once(client(h), ScanProfile(), SnapshotStore(tmp_path), tokens_path="data.candidates[].symbol")
+    assert snap.context == {"regime": "risk-on"}

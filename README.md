@@ -102,7 +102,7 @@ The adapter reads **only field paths you confirmed from a real response**. Nothi
 | `RYO_SCAN_TOKENS_PATH` | yes | Where tokens sit in a `scan_market` response. Confirmed live: `data.candidates[].symbol` |
 | `RYO_SCAN_STATUS_PATH` | no | Where RYO reports scan health. Default `status` |
 | `RYO_SCAN_FAIL_STATUSES` | no | Statuses stored as failed scans, not absence. Default `unavailable,error,failed` |
-| `RYO_OVERVIEW_REGIME_PATH` | no | Where `market_overview` puts the regime label. Fills the "Market mood" tile |
+| `RYO_OVERVIEW_REGIME_PATH` | no | Fills the "Market mood" tile. Leave empty to find the regime label in `market_overview` automatically, set a path to pick it yourself, or `off` to skip |
 | `PULSE_DATA_DIR` | no | Local snapshot store. Default `data/snapshots` |
 | `TAVILY_API_KEY`, `OPENROUTER_API_KEY` | no | Not used by the core skill |
 
@@ -225,7 +225,7 @@ Link: *added at submission.* The script is in [DEMO.md](DEMO.md).
 
 - Runs locally. The dashboard reads the snapshot store on the machine running `ryo-pulse collect`; there is no hosted version.
 - Pulse needs history: it says *insufficient* until there are at least 3 good comparable scans and 60% coverage. Collect for a few hours before judging persistence.
-- The "Market mood" tile stays blank until `RYO_OVERVIEW_REGIME_PATH` is set from a real `market_overview` response.
+- The "Market mood" tile shows "–" for scans taken before this was added, or if `market_overview` has no regime or Fear & Greed label.
 - The tool definition (`scan_persistence`) follows the MCP tool shape; it will be aligned with RYO's official skill spec once published.
 
 ## Disclosure (hackathon rules)

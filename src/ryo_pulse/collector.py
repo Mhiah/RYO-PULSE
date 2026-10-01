@@ -17,6 +17,43 @@ from .paths import PathError, extract
 from .store import SnapshotStore
 
 DEFAULT_FAIL_STATUSES = "unavailable,error,failed"
+_REGIME_KEYS = ("regime", "market_regime", "regime_label", "market_state")
+_LABEL_KEYS = ("label", "name", "state", "value", "classification")
+
+
+def _label(v: object) -> str | None:
+    if isinstance(v, str) and v.strip():
+        return v.strip()
+    if isinstance(v, dict):
+        for k in _LABEL_KEYS:
+            if isinstance(v.get(k), str) and v[k].strip():
+                return v[k].strip()
+    return None
+
+
+def find_regime(overview: object) -> str | None:
+    """Find the market regime label in a market_overview answer without a configured path.
+
+    Breadth-first, so a top-level `regime` wins over a nested one; falls back to the
+    Fear & Greed classification when no regime field exists.
+    """
+    queue, greed = [overview], None
+    while queue:
+        node = queue.pop(0)
+        if isinstance(node, list):
+            queue.extend(node)
+            continue
+        if not isinstance(node, dict):
+            continue
+        for k, v in node.items():
+            key = str(k).lower()
+            if key in _REGIME_KEYS and (lab := _label(v)):
+                return lab
+            if greed is None and "fear" in key and "greed" in key and isinstance(v, dict):
+                greed = _label({k2: v[k2] for k2 in ("classification", "label", "value_classification") if k2 in v})
+            if isinstance(v, (dict, list)):
+                queue.append(v)
+    return greed
 
 
 def _scan_problem(scan: object, tokens: list[str]) -> str | None:
@@ -46,7 +83,10 @@ def collect_once(
     now: datetime | None = None,
 ) -> Snapshot:
     tokens_path = tokens_path or os.environ.get("RYO_SCAN_TOKENS_PATH", "")
-    regime_path = regime_path if regime_path is not None else os.environ.get("RYO_OVERVIEW_REGIME_PATH", "")
+    if regime_path is None:  # unset or empty in .env means auto-detect; "off" disables the call
+        regime_path = os.environ.get("RYO_OVERVIEW_REGIME_PATH", "").strip() or "auto"
+    if regime_path.lower() == "off":
+        regime_path = ""
     if not tokens_path:
         raise RyoError("RYO_SCAN_TOKENS_PATH is not set; run `ryo-pulse discover` first")
 
@@ -71,9 +111,14 @@ def collect_once(
         try:
             overview = client.call_tool("market_overview", {})
             raw["market_overview"] = overview
-            vals = extract(overview, regime_path)
-            if vals and vals[0] is not None:
-                context["regime"] = str(vals[0])
+            if regime_path.lower() == "auto":
+                found = find_regime(overview)
+                if found:
+                    context["regime"] = found
+            else:
+                vals = extract(overview, regime_path)
+                if vals and vals[0] is not None:
+                    context["regime"] = str(vals[0])
         except (RyoError, PathError) as exc:
             context["regime_error"] = str(exc)[:120]  # context is optional; the scan still counts
 
