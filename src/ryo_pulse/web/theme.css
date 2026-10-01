@@ -31,8 +31,9 @@ a{color:var(--accent-text)}
 .skip{position:absolute;left:-999px;top:8px;background:var(--panel);color:var(--ink);padding:8px 12px;z-index:20;border-radius:6px}
 .skip:focus{left:8px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-/* side margin: roomy on phones, wider on big screens */
-:root{--gutter:clamp(24px,5vw,40px)}
+/* side margin: 16px on computers, roomier on phones */
+:root{--gutter:16px}
+@media (max-width:640px){:root{--gutter:28px}}
 .wrap{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
 
 /* top bar */
