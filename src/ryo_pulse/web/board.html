@@ -63,7 +63,7 @@ dialog::backdrop{background:rgba(0,0,0,.6)}
 dialog h2{font-size:20px;margin:0 0 4px}
 dialog > p{margin:0}
 .actions{grid-column:1/-1;margin-top:6px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
-.keys{margin:0 2px;font-size:14px}
+
 form.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px 20px;margin-top:20px}
 form.grid label{display:grid;gap:6px;font-size:14px}
 form.grid input{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
@@ -104,7 +104,7 @@ form.grid .hint{color:var(--muted);font-size:12px}
 <header class="page">
   <div class="title-row">
     <div class="title"><h1>What changed and why</h1><span id="source"></span></div>
-    <button class="btn" type="button" id="openSettings" aria-haspopup="dialog">
+    <button class="btn" type="button" id="openSettings" aria-haspopup="dialog" title="Settings (s)">
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></g></svg>
       Settings
     </button>
@@ -147,7 +147,6 @@ form.grid .hint{color:var(--muted);font-size:12px}
     <div class="legend"><span class="ok">ok</span><span class="failed">failed (not counted as absence)</span><span class="drifted">different scan settings (excluded)</span></div>
   </section>
 
-  <p class="muted keys">Keys: <kbd>/</kbd> find · <kbd>r</kbd> refresh · <kbd>s</kbd> settings · <kbd>1</kbd>–<kbd>5</kbd> filter status · <kbd>0</kbd> all. Read-only: this page never trades or calls RYO; it reads the scans <code>ryo-pulse collect</code> stored.</p>
 </main>
 
 <dialog id="settingsDlg" aria-labelledby="h-settings">
