@@ -188,13 +188,13 @@ kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-
   function render() {
     const d = data, s = d.scans;
     const meta = $("meta"); meta.replaceChildren();
-    meta.append(
+    meta.append(...[
       el("span", {class: "badge " + (d.provenance === "live" ? "live" : "fixture"), text: d.provenance === "live" ? "LIVE RYO DATA" : (d.provenance.toUpperCase() + " DATA")}),
       el("span", {}, "Scans ", el("b", {text: `${s.valid} good`}), ` / ${s.total} (${Math.round(s.coverage * 100)}% coverage)`),
       el("span", {}, "Last scan ", el("b", {text: fmt(s.latest_at)})),
       s.regime ? el("span", {}, "Regime ", el("b", {text: s.regime})) : null,
       el("span", {text: "Scan " + JSON.stringify(d.profile_params || {}) + " · " + (d.profile_hash || "–")}),
-    );
+    ].filter(Boolean));
 
     const alert = $("alert");
     if (!s.total) { alert.hidden = false; $("alertText").textContent = "No scans yet. Run: ryo-pulse collect -p top_n=20 --every 30"; }
