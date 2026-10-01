@@ -72,7 +72,7 @@ A local, read-only screen for **configuring and monitoring** the Pulse skill. It
 - **Settings:** window size, the four thresholds and a watchlist pinned to the top. These are saved per browser, sent to the same engine the skill uses, and the page refreshes every 60 s.
 - **Landing page** at `/` with live stats from your scan store and a "most persistent right now" card. The dashboard is at `/board`.
 - **Look:** a dark site with the accent colour `#c5ff4a`. The landing page alternates dark and light bands as you scroll.
-- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, and phone width (tokens become cards on a phone).
+- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `s` settings, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, and phone width (tokens become cards on a phone).
 
 It never calls RYO and has no new dependencies (Python stdlib server + plain HTML/CSS/JS, no build step, no external assets). Every number on screen comes from `engine.classify`, so the skill (Track 3) and the interface (Track 2) can each be judged on their own.
 
