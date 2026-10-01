@@ -8,18 +8,19 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c5ff4a'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%230f1600' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/static/theme.css">
 <style>
-.hero{padding:64px 0 40px;position:relative;overflow:hidden}
+.hero{padding:32px 0 40px;position:relative;overflow:hidden}
 .hero::before{content:"";position:absolute;inset:-40% -10% auto auto;width:720px;height:720px;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 28%,transparent),transparent);pointer-events:none;z-index:0}
 .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 .eyebrow b{color:var(--accent-text)}
-h1{font-size:clamp(36px,6vw,64px);line-height:1.12;letter-spacing:-.035em;margin:14px 0 16px;font-weight:850}
+h1{text-wrap:balance;font-size:clamp(34px,4.6vw,56px);line-height:1.1;letter-spacing:-.035em;margin:12px 0 14px;font-weight:850}
 /* inline-block so the highlight takes part in line height and never covers the line above */
 h1 .hl{display:inline-block;line-height:1.08;margin:.08em 0;background:var(--accent);color:var(--accent-ink);padding:.02em .18em .06em;border-radius:.16em}
-.lede{font-size:18px;color:var(--muted);max-width:34em;margin:0 0 26px}
+.lede{font-size:17px;color:var(--muted);max-width:34em;margin:0 0 22px}
 .cta{display:flex;flex-wrap:wrap;gap:10px}
 
-.live-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;width:100%;max-width:460px;justify-self:end;align-self:start;margin-top:64px}
+.live-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px}
+.side{display:grid;gap:14px;width:100%;max-width:460px;justify-self:end;align-self:start;margin-top:44px}
 .live-card header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
 .live-card h2{font-size:13px;margin:0;color:var(--muted);font-weight:700}
 .strip-row{display:grid;grid-template-columns:5em 1fr auto;gap:10px;align-items:center;padding:5px 0;border-top:1px solid var(--line);font-size:14px}
@@ -31,7 +32,7 @@ h1 .hl{display:inline-block;line-height:1.08;margin:.08em 0;background:var(--acc
 .live-card footer{margin-top:8px;color:var(--muted);font-size:12px}
 .empty{color:var(--muted);font-size:14px;padding:20px 0}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:0}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .stat .n{white-space:nowrap;font-size:26px;font-weight:850;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .stat .l{color:var(--muted);font-size:13px;font-weight:600}
@@ -74,7 +75,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
 
 @media (max-width:960px){
   .hero .wrap{grid-template-columns:1fr}
-  .live-card{justify-self:stretch;max-width:none;margin-top:0}
+  .side{justify-self:stretch;max-width:none;margin-top:0}
   .statuses{grid-template-columns:repeat(2,1fr)}
   .rules,.steps{grid-template-columns:1fr}
 }
@@ -83,7 +84,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
   .eyebrow{display:block;font-size:12px}
   .lede{margin-bottom:32px}
   .cta{gap:14px}
-  .stats{margin-top:36px;gap:14px}
+  .side{margin-top:12px}
   section.block{padding:56px 0}
   .compare,  .stats{grid-template-columns:repeat(2,1fr)}
   .statuses{grid-template-columns:1fr}
@@ -113,9 +114,9 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
           <a class="btn primary lg" href="/board">Open the dashboard <span aria-hidden="true">→</span></a>
           <a class="btn lg" href="#how">How it works</a>
         </div>
-        <div class="stats" id="stats" aria-live="polite"></div>
       </div>
 
+      <div class="side">
       <div class="live-card" aria-labelledby="h-live">
         <header>
           <h2 id="h-live">Most persistent right now</h2>
@@ -123,6 +124,8 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
         </header>
         <div id="strips"><p class="empty">Loading your scans…</p></div>
         <footer id="liveFoot"></footer>
+      </div>
+      <div class="stats" id="stats" aria-live="polite"></div>
       </div>
     </div>
   </section>
