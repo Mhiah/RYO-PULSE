@@ -159,7 +159,7 @@ A local, read-only screen for **configuring and monitoring** the Pulse skill. It
 - **Tokens, most important first:** emerging, then persistent, transient and absent. Each row has hits, streak, current rank, a presence strip of the last 24 good scans and a plain-language *why*. Expand a row for every reason, a `ryo-pulse pulse` command to reproduce it and the `replay_hash`.
 - **Scan health:** ok, failed and drifted scans over time, plus a banner when the latest scan failed. Failures are never shown as absence.
 - **Settings:** a Settings button in the top bar (or `s`) opens a popup for window size, the four thresholds and a watchlist pinned to the top. Empty boxes show the values in use. Settings are saved per browser and sent to the same engine the skill uses. The page refreshes every 60 s.
-- **Landing page** at `/`: the idea in one screen, a "most persistent right now" card and live stats from your scan store, then how it works and why it won't invent absence. The dashboard is at `/board`.
+- **Landing page** at `/`: the idea in one screen, a "most persistent right now" card and live stats from your scan store, then how it works and why it's outage-proof. The dashboard is at `/board`.
 - **Look:** a dark site with the accent colour `#c5ff4a` and a bundled font, so it looks the same on Windows, Mac and phones. The landing page alternates dark and light bands as you scroll.
 - **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `s` settings, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, and phone width (tokens become cards on a phone).
 
