@@ -18,6 +18,8 @@ It also returns counts, coverage, first/last seen, best rank, current streak, ma
 
 RYO's `scan_market` answers *"who shows up **now**?"*. Agents tend to treat one hit as a lasting signal. RYO has no primitive that asks *"did this token keep showing up under the same scan, or was it a flash?"* Pulse is that primitive: a small, deterministic skill contract that sits next to the existing tools.
 
+**How an agent uses it.** Before acting on a `scan_market` hit, call `scan_persistence` for that token. *Persistent* means it has kept showing up under the same scan. *Emerging* means it is new and worth watching, not yet a pattern. *Transient* means it was a flash. *Insufficient* means RYO's data was too patchy to say, so the agent should wait instead of guessing. The answer comes with plain reasons and a `replay_hash` the agent (or a human) can re-check later.
+
 Honesty rules built into the engine:
 - **Outages are not absence.** A failed scan is stored as `ok=false` and lowers coverage. It is never read as "the token wasn't there".
 - **Only like is compared with like.** Scans with a different profile (chain, theme, top_n, ...) are *drifted* and excluded, so one profile hash means one comparable series.
@@ -26,8 +28,10 @@ Honesty rules built into the engine:
 
 ## Quick start
 
+### Mac / Linux
+
 ```bash
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 pytest                                               # all tests run offline
 
@@ -36,10 +40,32 @@ ryo-pulse board --fixture tests/fixtures/demo_window.json
 ryo-pulse pulse PEPE --fixture tests/fixtures/demo_window.json
 ```
 
-### Live RYO data
+### Windows (PowerShell)
+
+```powershell
+git clone https://github.com/Mhiah/RYO-PULSE.git
+cd RYO-PULSE
+python -m venv .venv
+.venv\Scripts\activate
+pip install -e ".[dev]"
+pytest
+
+# Offline demo on the labelled synthetic fixture
+ryo-pulse serve --fixture tests/fixtures/demo_window.json
+
+# Live RYO data
+if (-not (Test-Path .env)) { Copy-Item .env.example .env }
+notepad .env        # fill RYO_MCP_URL and RYO_MCP_KEY
+ryo-pulse collect -p top_n=20 --every 30
+ryo-pulse serve --lan
+```
+
+If `pip install` says a file is in use, a running `ryo-pulse collect` is holding it; the existing install still works. If `ryo-pulse` isn't found, run `$env:PYTHONPATH="src"; python -m ryo_pulse serve` from the repo folder.
+
+### Live RYO data (Mac / Linux)
 
 ```bash
-cp .env.example .env        # fill RYO_MCP_URL and RYO_MCP_KEY (never commit .env)
+cp -n .env.example .env     # creates .env only if missing; fill RYO_MCP_URL and RYO_MCP_KEY (never commit .env)
 ryo-pulse discover -p top_n=20
 #   -> lists RYO tools, saves real scan_market / market_overview samples to data/catalog/,
 #      prints candidate field paths. Confirm one, then set RYO_SCAN_TOKENS_PATH
@@ -52,6 +78,52 @@ ryo-pulse replay results/btc.json               # recomputes and checks the repl
 ```
 
 The adapter reads **only field paths you confirmed from a real response**. Nothing about `scan_market`'s output shape is guessed in code.
+
+### Settings (`.env`)
+
+| Variable | Required | What it does |
+|---|---|---|
+| `RYO_MCP_URL` | yes | RYO MCP endpoint, `https://app-ryochan.com/api/mcp` |
+| `RYO_MCP_KEY` | yes | Your RYO key. Never commit it |
+| `RYO_AUTH_HEADER` / `RYO_AUTH_SCHEME` | no | How the key is sent. Default `Authorization: Bearer <key>` |
+| `RYO_SCAN_TOKENS_PATH` | yes | Where tokens sit in a `scan_market` response. Confirmed live: `data.candidates[].symbol` |
+| `RYO_SCAN_STATUS_PATH` | no | Where RYO reports scan health. Default `status` |
+| `RYO_SCAN_FAIL_STATUSES` | no | Statuses stored as failed scans, not absence. Default `unavailable,error,failed` |
+| `RYO_OVERVIEW_REGIME_PATH` | no | Where `market_overview` puts the regime label. Fills the "Market mood" tile |
+| `PULSE_DATA_DIR` | no | Local snapshot store. Default `data/snapshots` |
+| `TAVILY_API_KEY`, `OPENROUTER_API_KEY` | no | Not used by the core skill |
+
+## Example: one real call
+
+From live RYO scans on Oct 1 2026 (`scan_market`, top 20, 11 scans of which 4 failed during a RYO outage). Input, abbreviated:
+
+```json
+{"token": "BTW", "snapshots": [/* 11 stored scan_market snapshots */], "thresholds": {"min_valid": 3, "min_coverage": 0.6, "persistent_ratio": 0.6, "persistent_min_hits": 3}}
+```
+
+Output, abbreviated (`ryo-pulse pulse BTW --json` prints it in full):
+
+```json
+{
+  "token": "BTW",
+  "status": "emerging",
+  "counts": {"total": 11, "valid": 7, "failed": 4, "drifted": 0, "hits": 2},
+  "coverage": 0.6364,
+  "hit_ratio": 0.2857,
+  "current_streak": 2,
+  "first_seen": "2026-10-01T05:17:57Z",
+  "last_seen": "2026-10-01T05:47:58Z",
+  "best_rank": 16,
+  "provenance": "live",
+  "reasons": [
+    {"code": "FAILED_SCANS", "detail": "4 scan(s) failed; not counted as absence"},
+    {"code": "RECENT_ONLY", "detail": "first seen in scan 6/7 and present in the newest"}
+  ],
+  "replay_hash": "92104d6f81e5c77bc345f5bcd4d56555cbb2d11257833b4b5dac0f9e8db37f19"
+}
+```
+
+The four failed scans lower coverage but are not read as "BTW wasn't there". `ryo-pulse replay` recomputes the same `replay_hash` from the stored scans.
 
 ## Dashboard (Track 2)
 
@@ -131,6 +203,17 @@ src/ryo_pulse/
 tests/          offline tests; fixtures/ are SYNTHETIC and labelled as such
 docs/           design + JSON schemas
 ```
+
+## Demo video
+
+Link: *added at submission.* The script is in [DEMO.md](DEMO.md).
+
+## Limitations
+
+- Runs locally. The dashboard reads the snapshot store on the machine running `ryo-pulse collect`; there is no hosted version.
+- Pulse needs history: it says *insufficient* until there are at least 3 good comparable scans and 60% coverage. Collect for a few hours before judging persistence.
+- The "Market mood" tile stays blank until `RYO_OVERVIEW_REGIME_PATH` is set from a real `market_overview` response.
+- The tool definition (`scan_persistence`) follows the MCP tool shape; it will be aligned with RYO's official skill spec once published.
 
 ## Disclosure (hackathon rules)
 
