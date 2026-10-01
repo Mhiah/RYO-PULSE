@@ -22,9 +22,12 @@
   color-scheme:light;
   background:var(--bg);color:var(--ink);
 }
+/* Bundled font so the site looks the same on Windows, Mac and Linux (DejaVu Sans, see fonts/LICENSE.txt). */
+@font-face{font-family:"Pulse Sans";src:url("/static/fonts/DejaVuSans.woff2") format("woff2");font-weight:100 550;font-display:swap}
+@font-face{font-family:"Pulse Sans";src:url("/static/fonts/DejaVuSans-Bold.woff2") format("woff2");font-weight:551 1000;font-display:swap}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Pulse Sans","DejaVu Sans","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;}
 a{color:var(--accent-text)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
 ::selection{background:var(--accent);color:var(--accent-ink)}

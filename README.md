@@ -124,7 +124,7 @@ src/ryo_pulse/
   skill.py      JSON-in/JSON-out entry + tool definition
   cli.py        rich CLI
   dashboard.py  Track 2: board builder + local read-only HTTP server
-  web/          landing.html, board.html, shared theme.css (no build step, no external assets)
+  web/          landing.html, board.html, shared theme.css, fonts/ (bundled DejaVu Sans; no build step, no external assets)
 tests/          offline tests; fixtures/ are SYNTHETIC and labelled as such
 docs/           design + JSON schemas
 ```
@@ -133,6 +133,7 @@ docs/           design + JSON schemas
 
 - Written during the event window (Aug 18 – Oct 3, 2026 JST). No starter template was used.
 - Third-party libraries: [pydantic](https://docs.pydantic.dev/), [httpx](https://www.python-httpx.org/), [rich](https://github.com/Textualize/rich), [pytest](https://pytest.org/).
+- Bundled font: [DejaVu Sans](https://dejavu-fonts.github.io/) (Bitstream Vera license, see `src/ryo_pulse/web/fonts/LICENSE.txt`), subset to Latin so the site looks the same on every OS.
 - AI assistance: built with Claude Code.
 - `tests/fixtures/demo_window.json` is **synthetic** test data, and is labelled so in the file and in every result it produces. Live demos use snapshots collected from RYO with `ryo-pulse collect`.
 - No secrets are committed. Use `.env.example` and keep your real `.env` local.

@@ -180,6 +180,8 @@ def make_handler(load: Callable[[], list[Snapshot]]) -> type[BaseHTTPRequestHand
         "/index.html": ("landing.html", "text/html; charset=utf-8"),
         "/board": ("board.html", "text/html; charset=utf-8"),
         "/static/theme.css": ("theme.css", "text/css; charset=utf-8"),
+        "/static/fonts/DejaVuSans.woff2": ("fonts/DejaVuSans.woff2", "font/woff2"),
+        "/static/fonts/DejaVuSans-Bold.woff2": ("fonts/DejaVuSans-Bold.woff2", "font/woff2"),
     }
     files = {route: (web.joinpath(name).read_bytes(), ctype) for route, (name, ctype) in pages.items()}
 

@@ -20,7 +20,7 @@ ryo-pulse = "ryo_pulse.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-ryo_pulse = ["web/*.html", "web/*.css", "web/*.js"]
+ryo_pulse = ["web/*.html", "web/*.css", "web/fonts/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
