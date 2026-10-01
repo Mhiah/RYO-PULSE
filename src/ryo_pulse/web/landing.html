@@ -64,12 +64,13 @@ section.block .sub{color:var(--muted);font-size:16px;max-width:44em;margin:0 0 2
 .steps .card::before{counter-increment:step;content:counter(step);position:absolute;top:16px;left:20px;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:850;display:grid;place-items:center;font-size:14px}
 .steps code{display:inline-block;margin-top:10px;background:var(--chip);border:1px solid var(--line);padding:4px 8px;border-radius:7px;color:var(--ink)}
 
-.tracks{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.tag{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border-radius:6px;background:var(--accent);color:var(--accent-ink);margin-bottom:10px}
 
-.final{padding:64px 0;text-align:center}
+.final{padding:72px 0;text-align:center;background:var(--bg);color:var(--ink)}
+.tracks-note{margin:16px 0 0;color:var(--muted);font-size:14px;font-weight:600}
 .final h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;margin:0 0 18px}
 footer.site{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:13px}
+footer.site a{color:var(--muted);font-weight:600}
+footer.site a:hover{color:var(--ink)}
 footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
 
 @media (max-width:960px){
@@ -79,8 +80,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
 }
 @media (max-width:640px){
   .hero{padding:36px 0 24px}
-  .compare,.tracks{grid-template-columns:1fr}
-  .stats{grid-template-columns:repeat(2,1fr)}
+  .compare,  .stats{grid-template-columns:repeat(2,1fr)}
   .statuses{grid-template-columns:1fr}
   .nav .hide-sm{display:none}
 }
@@ -198,29 +198,19 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
     </div>
   </section>
 
-  <section class="block tone-light" aria-labelledby="h-tracks">
-    <div class="wrap">
-      <p class="kicker">RYO-CHAN Hackathon 2026</p>
-      <h2 id="h-tracks">Two halves, each judgeable on its own</h2>
-      <div class="tracks">
-        <div class="card"><span class="tag">Track 3 · New Skills</span><h3>The Pulse skill</h3><p>A JSON-in, JSON-out contract (<code>scan_persistence</code>) with published schemas. Deterministic, read-only and ready to sit next to RYO's tools.</p></div>
-        <div class="card"><span class="tag">Track 2 · Dashboards</span><h3>The Pulse dashboard</h3><p>Shows what changed and why within 30 seconds. It's sorted by importance, works by keyboard alone, and works on a phone.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="final">
+  <section class="final tone-light">
     <div class="wrap">
       <h2>See what's actually persisting.</h2>
       <a class="btn primary lg" href="/board">Open the dashboard <span aria-hidden="true">→</span></a>
+      <p class="tracks-note">Track 3 skill + Track 2 dashboard</p>
     </div>
   </section>
 </main>
 
 <footer class="site">
   <div class="wrap">
-    <span>RYO Pulse · read-only research skill built on RYO's research tools</span>
-    <span>Read-only: never trades, never moves funds</span>
+    <span>RYO Pulse · built for the RYO-CHAN Hackathon 2026</span>
+    <a href="https://github.com/Mhiah/RYO-PULSE">GitHub</a>
   </div>
 </footer>
 
