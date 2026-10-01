@@ -180,7 +180,6 @@ def make_handler(load: Callable[[], list[Snapshot]]) -> type[BaseHTTPRequestHand
         "/index.html": ("landing.html", "text/html; charset=utf-8"),
         "/board": ("board.html", "text/html; charset=utf-8"),
         "/static/theme.css": ("theme.css", "text/css; charset=utf-8"),
-        "/static/theme.js": ("theme.js", "text/javascript; charset=utf-8"),
     }
     files = {route: (web.joinpath(name).read_bytes(), ctype) for route, (name, ctype) in pages.items()}
 

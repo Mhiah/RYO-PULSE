@@ -88,8 +88,7 @@ def test_http_page_and_api(server):
     assert code == 200 and "text/html" in ctype and b"What changed since the last scan" in body
     code, ctype, body = get(server + "/static/theme.css")
     assert code == 200 and "text/css" in ctype and b"#c5ff4a" in body
-    code, ctype, _ = get(server + "/static/theme.js")
-    assert code == 200 and "javascript" in ctype
+    assert get(server + "/static/theme.js")[0] == 404  # no day/night toggle any more
     assert get(server + "/static/../dashboard.py")[0] == 404
     code, _, body = get(server + "/api/board?window=8&persistent_ratio=0.6&watch=INJ")
     data = json.loads(body)

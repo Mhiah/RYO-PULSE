@@ -6,7 +6,6 @@
 <title>RYO Pulse</title>
 <meta name="description" content="RYO Pulse: a read-only RYO skill that tells you whether a token keeps showing up across comparable scans.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c5ff4a'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%230f1600' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<script src="/static/theme.js"></script>
 <link rel="stylesheet" href="/static/theme.css">
 <style>
 .hero{padding:64px 0 40px;position:relative;overflow:hidden}
@@ -37,7 +36,7 @@ h1 .hl{display:inline-block;line-height:1.08;margin:.08em 0;background:var(--acc
 .stat .n{white-space:nowrap;font-size:26px;font-weight:850;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .stat .l{color:var(--muted);font-size:13px;font-weight:600}
 
-section.block{padding:56px 0;border-top:1px solid var(--line)}
+section.block{padding:64px 0;background:var(--bg);color:var(--ink)}
 section.block h2{font-size:clamp(24px,3.2vw,34px);letter-spacing:-.02em;margin:0 0 10px;line-height:1.15}
 section.block .sub{color:var(--muted);font-size:16px;max-width:44em;margin:0 0 28px}
 .kicker{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin:0 0 8px}
@@ -68,7 +67,7 @@ section.block .sub{color:var(--muted);font-size:16px;max-width:44em;margin:0 0 2
 .tracks{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .tag{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border-radius:6px;background:var(--accent);color:var(--accent-ink);margin-bottom:10px}
 
-.final{padding:64px 0;text-align:center;border-top:1px solid var(--line)}
+.final{padding:64px 0;text-align:center}
 .final h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;margin:0 0 18px}
 footer.site{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:13px}
 footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
@@ -99,10 +98,6 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
       <a class="hide-sm" href="#how">How it works</a>
       <a class="hide-sm" href="#honest">Honest by design</a>
       <a href="/board">Dashboard</a>
-      <button class="theme-toggle" type="button" data-theme-toggle>
-        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
-        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>
-      </button>
     </nav>
   </div>
 </div>
@@ -132,7 +127,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
     </div>
   </section>
 
-  <section class="block" aria-labelledby="h-gap">
+  <section class="block tone-light" aria-labelledby="h-gap">
     <div class="wrap">
       <p class="kicker">The gap</p>
       <h2 id="h-gap">A single hit isn't a pattern</h2>
@@ -167,7 +162,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
     </div>
   </section>
 
-  <section class="block" id="honest" aria-labelledby="h-honest">
+  <section class="block tone-light" id="honest" aria-labelledby="h-honest">
     <div class="wrap">
       <p class="kicker">Honest by design</p>
       <h2 id="h-honest">It won't invent absence</h2>
@@ -205,13 +200,13 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
     </div>
   </section>
 
-  <section class="block" aria-labelledby="h-tracks">
+  <section class="block tone-light" aria-labelledby="h-tracks">
     <div class="wrap">
       <p class="kicker">RYO-CHAN Hackathon 2026</p>
       <h2 id="h-tracks">Two halves, each judgeable on its own</h2>
       <div class="tracks">
         <div class="card"><span class="tag">Track 3 · New Skills</span><h3>The Pulse skill</h3><p>A JSON-in, JSON-out contract (<code>scan_persistence</code>) with published schemas. Deterministic, read-only and ready to sit next to RYO's tools.</p></div>
-        <div class="card"><span class="tag">Track 2 · Dashboards</span><h3>The Pulse dashboard</h3><p>Shows what changed and why within 30 seconds. It's sorted by importance, works by keyboard alone, and has day and night modes.</p></div>
+        <div class="card"><span class="tag">Track 2 · Dashboards</span><h3>The Pulse dashboard</h3><p>Shows what changed and why within 30 seconds. It's sorted by importance, works by keyboard alone, and works on a phone.</p></div>
       </div>
     </div>
   </section>
@@ -227,7 +222,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
 <footer class="site">
   <div class="wrap">
     <span>RYO Pulse · read-only research skill built on RYO's research tools</span>
-    <span>Press <kbd>t</kbd> to switch day and night</span>
+    <span>Read-only: never trades, never moves funds</span>
   </div>
 </footer>
 

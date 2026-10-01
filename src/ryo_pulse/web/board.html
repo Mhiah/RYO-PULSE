@@ -5,16 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RYO Pulse · Dashboard</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c5ff4a'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%230f1600' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<script src="/static/theme.js"></script>
 <link rel="stylesheet" href="/static/theme.css">
 <style>
 header.page,main{max-width:1180px;margin:0 auto;padding:16px}
-header.page{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between;padding-top:22px}
+header.page{display:grid;gap:14px;padding-top:24px}
+.title-row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:0}
+.fact{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.fact dt{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fact dd{margin:4px 0 0;font-size:20px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fact dd small{display:block;font-size:13px;font-weight:500;color:var(--muted);letter-spacing:0}
 h1{font-size:26px;margin:0;letter-spacing:-.02em;font-weight:850}
 h1 small{font-weight:400;color:var(--muted);font-size:14px;margin-left:8px}
 h2{font-size:16px;margin:0 0 10px}
-.meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:14px}
-.meta b{color:var(--ink);font-weight:600}
 main section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:0 0 14px;box-shadow:var(--shadow)}
 section.changes-box{border-left:4px solid var(--accent)}
 .alert{border-color:var(--fail)}
@@ -46,6 +49,7 @@ tbody tr:not(.detail):hover td{background:var(--chip)}
 .detail td{background:var(--chip);font-size:14px}
 .detail ul{margin:4px 0;padding-left:18px}
 code{word-break:break-all}
+.muted code{white-space:nowrap;word-break:normal}
 .timeline{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0}
 .timeline i{width:12px;height:12px;border-radius:2px}
 .timeline .ok{background:var(--ok)} .timeline .failed{background:var(--fail)} .timeline .drifted{background:var(--drift)}
@@ -58,7 +62,18 @@ form.grid label{display:grid;gap:3px;font-size:14px}
 form.grid input{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
 form.grid .hint{color:var(--muted);font-size:12px}
 .muted{color:var(--muted)}
-@media (max-width:640px){.hide-sm{display:none}}
+@media (max-width:900px){.facts{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){
+  .hide-sm{display:none}
+  /* phone: each token becomes a small card, the reason gets the full width */
+  thead{display:none}
+  tbody tr:not(.detail){display:grid;grid-template-columns:1fr auto auto;column-gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+  tbody tr:not(.detail) td{border:0;padding:2px 0}
+  tbody tr:not(.detail) td.hide-sm{display:none}
+  tbody td.why{grid-column:1/-1;font-size:14px}
+  tbody tr.detail{display:block}
+  tbody tr.detail td{display:block}
+}
 </style>
 </head>
 <body>
@@ -72,16 +87,15 @@ form.grid .hint{color:var(--muted);font-size:12px}
     <nav class="nav" aria-label="Main">
       <a href="/">Home</a>
       <a href="/board" aria-current="page">Dashboard</a>
-      <button class="theme-toggle" type="button" data-theme-toggle>
-        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
-        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>
-      </button>
     </nav>
   </div>
 </div>
 <header class="page">
-  <h1>Dashboard <small>What changed, and why</small></h1>
-  <div class="meta" id="meta" aria-label="Data source">Loading…</div>
+  <div class="title-row">
+    <h1>Dashboard <small>What changed, and why</small></h1>
+    <span id="source"></span>
+  </div>
+  <dl class="facts" id="meta" aria-label="About these scans"><div class="fact"><dt>Loading…</dt></div></dl>
 </header>
 <main>
   <p id="live" class="sr" aria-live="polite"></p>
@@ -132,7 +146,7 @@ form.grid .hint{color:var(--muted);font-size:12px}
         <div><button class="sbtn primary" type="submit">Apply</button> <button class="sbtn" type="button" id="reset">Defaults</button></div>
       </form>
     </details>
-    <p class="muted" style="margin:10px 0 0">Keys: <kbd>/</kbd> find · <kbd>r</kbd> refresh · <kbd>t</kbd> day/night · <kbd>1</kbd>–<kbd>5</kbd> filter status · <kbd>0</kbd> all. Read-only: this page never trades or calls RYO; it reads the scans <code>ryo-pulse collect</code> stored.</p>
+    <p class="muted" style="margin:10px 0 0">Keys: <kbd>/</kbd> find · <kbd>r</kbd> refresh · <kbd>1</kbd>–<kbd>5</kbd> filter status · <kbd>0</kbd> all. Read-only: this page never trades or calls RYO; it reads the scans <code>ryo-pulse collect</code> stored.</p>
   </section>
 </main>
 <script>
@@ -178,16 +192,28 @@ form.grid .hint{color:var(--muted);font-size:12px}
     }
   }
 
+  function scanSettings(p) {
+    p = p || {};
+    const out = [], n = p.top_n ?? p.limit;
+    if (n != null) out.push("Top " + n);
+    if (p.chain) out.push(String(p.chain).toUpperCase());
+    if (p.theme) out.push(p.theme);
+    if (p.filter_direction) out.push(p.filter_direction);
+    for (const [k, v] of Object.entries(p)) if (!["top_n", "limit", "chain", "theme", "filter_direction"].includes(k)) out.push(`${k} ${v}`);
+    return out.join(" · ") || "Default";
+  }
+
   function render() {
     const d = data, s = d.scans;
-    const meta = $("meta"); meta.replaceChildren();
-    meta.append(...[
-      el("span", {class: "pill " + (d.provenance === "live" ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), d.provenance === "live" ? "Live RYO data" : (d.provenance + " data")),
-      el("span", {}, "Scans ", el("b", {text: `${s.valid} good`}), ` / ${s.total} (${Math.round(s.coverage * 100)}% coverage)`),
-      el("span", {}, "Last scan ", el("b", {text: fmt(s.latest_at)})),
-      s.regime ? el("span", {}, "Regime ", el("b", {text: s.regime})) : null,
-      el("span", {text: "Scan " + JSON.stringify(d.profile_params || {}) + " · " + (d.profile_hash || "–")}),
-    ].filter(Boolean));
+    const live = d.provenance === "live";
+    $("source").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? "Live RYO data" : (d.provenance + " data")));
+    const fact = (label, value, note, title) => el("div", {class: "fact", title: title || ""}, el("dt", {text: label}), el("dd", {}, value, note ? el("small", {text: note}) : null));
+    $("meta").replaceChildren(
+      fact("Good scans", `${s.valid} of ${s.total}`, `${Math.round(s.coverage * 100)}% coverage`),
+      fact("Last scan", fmt(s.latest_at), s.latest_ok ? "succeeded" : "failed"),
+      fact("Market mood", s.regime || "–", "from RYO market_overview"),
+      fact("Scan settings", scanSettings(d.profile_params), "only same-setting scans are compared", "settings id " + (d.profile_hash || "–")),
+    );
 
     const alert = $("alert");
     if (!s.total) { alert.hidden = false; $("alertText").textContent = "No scans yet. Run: ryo-pulse collect -p top_n=20 --every 30"; }

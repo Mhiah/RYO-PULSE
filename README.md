@@ -71,8 +71,8 @@ A local, read-only screen for **configuring and monitoring** the Pulse skill. It
 - **Scan health:** ok, failed and drifted scans over time, plus a banner when the latest scan failed. Failures are never shown as absence.
 - **Settings:** window size, the four thresholds and a watchlist pinned to the top. These are saved per browser, sent to the same engine the skill uses, and the page refreshes every 60 s.
 - **Landing page** at `/` with live stats from your scan store and a "most persistent right now" card. The dashboard is at `/board`.
-- **Day and night:** a toggle in the top bar (or press `t`) that's remembered per browser and defaults to your OS setting. The accent colour is `#c5ff4a`.
-- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `t` day/night, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, light and dark themes, and phone width.
+- **Look:** a dark site with the accent colour `#c5ff4a`. The landing page alternates dark and light bands as you scroll.
+- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, and phone width (tokens become cards on a phone).
 
 It never calls RYO and has no new dependencies (Python stdlib server + plain HTML/CSS/JS, no build step, no external assets). Every number on screen comes from `engine.classify`, so the skill (Track 3) and the interface (Track 2) can each be judged on their own.
 
@@ -123,7 +123,7 @@ src/ryo_pulse/
   skill.py      JSON-in/JSON-out entry + tool definition
   cli.py        rich CLI
   dashboard.py  Track 2: board builder + local read-only HTTP server
-  web/          landing.html, board.html, shared theme.css + theme.js (no build step, no external assets)
+  web/          landing.html, board.html, shared theme.css (no build step, no external assets)
 tests/          offline tests; fixtures/ are SYNTHETIC and labelled as such
 docs/           design + JSON schemas
 ```

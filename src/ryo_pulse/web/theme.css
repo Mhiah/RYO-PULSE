@@ -1,18 +1,6 @@
-/* RYO Pulse shared theme. Accent #c5ff4a; day and night via [data-theme] (falls back to the OS setting). */
+/* RYO Pulse shared theme. Accent #c5ff4a. The site is dark; sections marked .tone-light switch to the light palette. */
 :root{
   --accent:#c5ff4a;            /* fills, highlights */
-  --accent-ink:#0f1600;        /* text on accent fills */
-  --accent-text:#3c5a00;       /* accent used as text on light backgrounds (AA contrast) */
-  --accent-soft:#eefbd2;
-  --bg:#f6f7f2; --bg-2:#eceee6; --panel:#ffffff; --ink:#12160d; --muted:#5a6152; --line:#dcdfd4; --chip:#eff1ea;
-  --focus:#3c5a00;
-  --persistent:#2f6b00; --emerging:#005f8a; --transient:#8a5a00; --absent:#5a6152; --insufficient:#a3241c;
-  --ok:#3f8a00; --fail:#c0392b; --drift:#b07a00;
-  --shadow:0 1px 2px rgba(18,22,13,.06),0 8px 24px rgba(18,22,13,.06);
-  --cell-on:#c5ff4a; --cell-edge:#3c5a00; --cell-off:#dcdfd4;
-  color-scheme:light;
-}
-:root[data-theme="dark"]{
   --accent-ink:#0f1600; --accent-text:#c5ff4a; --accent-soft:#1d2610;
   --bg:#0b0d09; --bg-2:#11140e; --panel:#141811; --ink:#eef3e6; --muted:#9aa58e; --line:#262d1f; --chip:#1b2116;
   --focus:#c5ff4a;
@@ -22,21 +10,21 @@
   --cell-on:#c5ff4a; --cell-edge:transparent; --cell-off:#262d1f;
   color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --accent-ink:#0f1600; --accent-text:#c5ff4a; --accent-soft:#1d2610;
-    --bg:#0b0d09; --bg-2:#11140e; --panel:#141811; --ink:#eef3e6; --muted:#9aa58e; --line:#262d1f; --chip:#1b2116;
-    --focus:#c5ff4a;
-    --persistent:#c5ff4a; --emerging:#7fd3ff; --transient:#f5b84a; --absent:#8e9884; --insufficient:#ff8a7a;
-    --ok:#9be22f; --fail:#ff6b5b; --drift:#f5b84a;
-    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.35);
-    --cell-on:#c5ff4a; --cell-edge:transparent; --cell-off:#262d1f;
-    color-scheme:dark;
-  }
+/* A light band inside the dark page: same token names, light values, so every component just works. */
+.tone-light{
+  --accent-ink:#0f1600; --accent-text:#3c5a00; --accent-soft:#eefbd2;
+  --bg:#f6f7f2; --bg-2:#eceee6; --panel:#ffffff; --ink:#12160d; --muted:#5a6152; --line:#dcdfd4; --chip:#eff1ea;
+  --focus:#3c5a00;
+  --persistent:#2f6b00; --emerging:#005f8a; --transient:#8a5a00; --absent:#5a6152; --insufficient:#a3241c;
+  --ok:#3f8a00; --fail:#c0392b; --drift:#b07a00;
+  --shadow:0 1px 2px rgba(18,22,13,.06),0 8px 24px rgba(18,22,13,.06);
+  --cell-on:#c5ff4a; --cell-edge:#3c5a00; --cell-off:#dcdfd4;
+  color-scheme:light;
+  background:var(--bg);color:var(--ink);
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;transition:background .2s,color .2s}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Inter","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;}
 a{color:var(--accent-text)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
 ::selection{background:var(--accent);color:var(--accent-ink)}
@@ -48,7 +36,7 @@ a{color:var(--accent-text)}
 /* top bar */
 .topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
 .topbar .wrap{display:flex;align-items:center;gap:12px;min-height:60px}
-.brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
+.brand{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
 .logo{width:30px;height:30px;border-radius:9px;background:var(--accent);display:grid;place-items:center}
 .logo svg{width:20px;height:20px}
 .nav{display:flex;gap:4px;margin-left:auto;align-items:center}
@@ -62,18 +50,6 @@ a{color:var(--accent-text)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .btn.primary:hover{filter:brightness(.95)}
 .btn.lg{padding:14px 20px;font-size:16px;border-radius:12px}
-
-/* day/night toggle */
-.theme-toggle{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);cursor:pointer}
-.theme-toggle:hover{border-color:var(--muted)}
-.theme-toggle svg{width:18px;height:18px}
-.theme-toggle .sun{display:none}
-:root[data-theme="dark"] .theme-toggle .sun{display:block}
-:root[data-theme="dark"] .theme-toggle .moon{display:none}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) .theme-toggle .sun{display:block}
-  :root:not([data-theme="light"]) .theme-toggle .moon{display:none}
-}
 
 /* status labels: text + shape, never colour alone */
 .st{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;white-space:nowrap}
