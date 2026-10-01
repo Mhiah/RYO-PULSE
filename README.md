@@ -56,9 +56,11 @@ The adapter reads **only field paths you confirmed from a real response**. Nothi
 ## Dashboard (Track 2)
 
 ```bash
-ryo-pulse serve                      # opens http://127.0.0.1:8765, reads your stored live scans
+ryo-pulse serve                      # opens http://127.0.0.1:8765 (landing) → /board (dashboard)
 ryo-pulse serve --fixture tests/fixtures/demo_window.json   # offline demo (labelled FIXTURE DATA)
 ```
+
+![Landing page, night mode](docs/landing.png)
 
 ![Dashboard on the labelled synthetic fixture](docs/dashboard-fixture.png)
 
@@ -68,9 +70,11 @@ A local, read-only screen for **configuring and monitoring** the Pulse skill. It
 - **Tokens, most important first:** emerging, then persistent, transient and absent. Each row has hits, streak, current rank, a presence strip of the last 24 good scans and a plain-language *why*. Expand a row for every reason, a `ryo-pulse pulse` command to reproduce it and the `replay_hash`.
 - **Scan health:** ok, failed and drifted scans over time, plus a banner when the latest scan failed. Failures are never shown as absence.
 - **Settings:** window size, the four thresholds and a watchlist pinned to the top. These are saved per browser, sent to the same engine the skill uses, and the page refreshes every 60 s.
-- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, light and dark themes, and phone width.
+- **Landing page** at `/` with live stats from your scan store and a "most persistent right now" card. The dashboard is at `/board`.
+- **Day and night:** a toggle in the top bar (or press `t`) that's remembered per browser and defaults to your OS setting. The accent colour is `#c5ff4a`.
+- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `t` day/night, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, light and dark themes, and phone width.
 
-It never calls RYO and has no new dependencies (Python stdlib server + one HTML file). Every number on screen comes from `engine.classify`, so the skill (Track 3) and the interface (Track 2) can each be judged on their own.
+It never calls RYO and has no new dependencies (Python stdlib server + plain HTML/CSS/JS, no build step, no external assets). Every number on screen comes from `engine.classify`, so the skill (Track 3) and the interface (Track 2) can each be judged on their own.
 
 ## How it works
 
@@ -119,7 +123,7 @@ src/ryo_pulse/
   skill.py      JSON-in/JSON-out entry + tool definition
   cli.py        rich CLI
   dashboard.py  Track 2: board builder + local read-only HTTP server
-  web/index.html  the dashboard page (no build step, no external assets)
+  web/          landing.html, board.html, shared theme.css + theme.js (no build step, no external assets)
 tests/          offline tests; fixtures/ are SYNTHETIC and labelled as such
 docs/           design + JSON schemas
 ```

@@ -3,70 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RYO Pulse</title>
-<link rel="icon" href="data:,">
+<title>RYO Pulse · Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c5ff4a'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%230f1600' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script src="/static/theme.js"></script>
+<link rel="stylesheet" href="/static/theme.css">
 <style>
-:root{
-  --bg:#f7f8f6; --panel:#ffffff; --ink:#15181a; --muted:#5b6369; --line:#dde1e3; --focus:#1d5fd1;
-  --persistent:#17663a; --emerging:#0b5d8f; --transient:#8a5a00; --absent:#5b6369; --insufficient:#a3241c;
-  --ok:#17663a; --fail:#a3241c; --drift:#8a5a00; --chip:#eef1f2;
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#0e1112; --panel:#161a1c; --ink:#e9eef0; --muted:#9aa5ab; --line:#2a3135; --focus:#7fb0ff;
-    --persistent:#5fd68f; --emerging:#6cc4ff; --transient:#f0b44c; --absent:#9aa5ab; --insufficient:#ff8a80;
-    --ok:#5fd68f; --fail:#ff8a80; --drift:#f0b44c; --chip:#20272a;
-  }
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-a{color:var(--focus)}
-:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
-.skip{position:absolute;left:-999px;top:8px;background:var(--panel);padding:8px 12px;z-index:9}
-.skip:focus{left:8px}
-header,main{max-width:1180px;margin:0 auto;padding:16px}
-header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between}
-h1{font-size:22px;margin:0}
+header.page,main{max-width:1180px;margin:0 auto;padding:16px}
+header.page{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between;padding-top:22px}
+h1{font-size:26px;margin:0;letter-spacing:-.02em;font-weight:850}
 h1 small{font-weight:400;color:var(--muted);font-size:14px;margin-left:8px}
 h2{font-size:16px;margin:0 0 10px}
 .meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:14px}
 .meta b{color:var(--ink);font-weight:600}
-.badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em;border:1px solid currentColor}
-.live{color:var(--ok)} .fixture{color:var(--insufficient)}
-section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 14px}
+main section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:0 0 14px;box-shadow:var(--shadow)}
+section.changes-box{border-left:4px solid var(--accent)}
 .alert{border-color:var(--fail)}
 .alert p{margin:0;color:var(--fail);font-weight:600}
 .changes{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .changes li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
 .changes .why{color:var(--muted);font-size:14px}
 .tok{font-weight:700;font-variant-numeric:tabular-nums;min-width:4.5em}
-.st{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:13px;white-space:nowrap}
-.st::before{content:"";width:9px;height:9px;display:inline-block}
-.st.persistent{color:var(--persistent)} .st.persistent::before{background:var(--persistent);border-radius:50%}
-.st.emerging{color:var(--emerging)} .st.emerging::before{background:var(--emerging);clip-path:polygon(50% 0,100% 100%,0 100%)}
-.st.transient{color:var(--transient)} .st.transient::before{border:2px solid var(--transient);border-radius:50%;width:5px;height:5px}
-.st.absent{color:var(--absent)} .st.absent::before{background:var(--absent);height:2px}
-.st.insufficient{color:var(--insufficient)} .st.insufficient::before{background:var(--insufficient);clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
 .arrow{color:var(--muted)}
 .inout{margin:10px 0 0;color:var(--muted);font-size:14px}
 .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
-.filters button,.btn{font:inherit;font-size:14px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
-.filters button[aria-pressed="true"]{border-color:var(--ink);font-weight:700}
+.filters button,.sbtn{font:inherit;font-size:14px;font-weight:600;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:6px 12px;cursor:pointer}
+.filters button:hover,.sbtn:hover{border-color:var(--muted)}
+.filters button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800}
+.sbtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800}
 .filters input{font:inherit;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);min-width:12em}
 .tablewrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
-tr.watched td:first-child{box-shadow:inset 3px 0 0 var(--focus)}
+tr.watched td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+tbody tr:not(.detail):hover td{background:var(--chip)}
 .rowbtn{all:unset;cursor:pointer;font-weight:700}
 .rowbtn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .presence{display:flex;gap:2px}
-.presence i{width:7px;height:16px;border-radius:2px;background:var(--line)}
-.presence i.on{background:var(--ink)}
+.presence i{width:7px;height:16px;border-radius:2px;background:var(--cell-off)}
+.presence i.on{background:var(--cell-on);box-shadow:inset 0 0 0 1.5px var(--cell-edge)}
 .why{color:var(--muted)}
 .detail td{background:var(--chip);font-size:14px}
 .detail ul{margin:4px 0;padding-left:18px}
-code{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+code{word-break:break-all}
 .timeline{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0}
 .timeline i{width:12px;height:12px;border-radius:2px}
 .timeline .ok{background:var(--ok)} .timeline .failed{background:var(--fail)} .timeline .drifted{background:var(--drift)}
@@ -79,22 +58,36 @@ form.grid label{display:grid;gap:3px;font-size:14px}
 form.grid input{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
 form.grid .hint{color:var(--muted);font-size:12px}
 .muted{color:var(--muted)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px}
 @media (max-width:640px){.hide-sm{display:none}}
 </style>
 </head>
 <body>
 <a class="skip" href="#board">Skip to tokens</a>
-<header>
-  <h1>RYO Pulse <small>One scan shows a signal. Repeated scans reveal persistence.</small></h1>
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="RYO Pulse home">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 13h4l2.5-6 4 11 2.5-5H22" fill="none" stroke="#0f1600" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      RYO Pulse
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/board" aria-current="page">Dashboard</a>
+      <button class="theme-toggle" type="button" data-theme-toggle>
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>
+      </button>
+    </nav>
+  </div>
+</div>
+<header class="page">
+  <h1>Dashboard <small>What changed, and why</small></h1>
   <div class="meta" id="meta" aria-label="Data source">Loading…</div>
 </header>
 <main>
   <p id="live" class="sr" aria-live="polite"></p>
   <section id="alert" class="alert" hidden><p id="alertText"></p></section>
 
-  <section aria-labelledby="h-changes">
+  <section class="changes-box" aria-labelledby="h-changes">
     <h2 id="h-changes">What changed since the last scan</h2>
     <ul class="changes" id="changes"></ul>
     <p class="inout" id="inout"></p>
@@ -136,10 +129,10 @@ kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-
         <label>Persistent ratio<input name="persistent_ratio" type="number" min="0.05" max="1" step="0.05"><span class="hint">Seen ÷ comparable scans</span></label>
         <label>Persistent min hits<input name="persistent_min_hits" type="number" min="1"></label>
         <label>Watchlist<input name="watch" type="text" placeholder="BTC, SOL, INJ"><span class="hint">Pinned to the top, even if never seen</span></label>
-        <div><button class="btn" type="submit">Apply</button> <button class="btn" type="button" id="reset">Defaults</button></div>
+        <div><button class="sbtn primary" type="submit">Apply</button> <button class="sbtn" type="button" id="reset">Defaults</button></div>
       </form>
     </details>
-    <p class="muted" style="margin:10px 0 0">Keys: <kbd>/</kbd> find · <kbd>r</kbd> refresh · <kbd>1</kbd>–<kbd>5</kbd> filter status · <kbd>0</kbd> all. Read-only: this page never trades or calls RYO; it reads the scans <code>ryo-pulse collect</code> stored.</p>
+    <p class="muted" style="margin:10px 0 0">Keys: <kbd>/</kbd> find · <kbd>r</kbd> refresh · <kbd>t</kbd> day/night · <kbd>1</kbd>–<kbd>5</kbd> filter status · <kbd>0</kbd> all. Read-only: this page never trades or calls RYO; it reads the scans <code>ryo-pulse collect</code> stored.</p>
   </section>
 </main>
 <script>
@@ -189,7 +182,7 @@ kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-
     const d = data, s = d.scans;
     const meta = $("meta"); meta.replaceChildren();
     meta.append(...[
-      el("span", {class: "badge " + (d.provenance === "live" ? "live" : "fixture"), text: d.provenance === "live" ? "LIVE RYO DATA" : (d.provenance.toUpperCase() + " DATA")}),
+      el("span", {class: "pill " + (d.provenance === "live" ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), d.provenance === "live" ? "Live RYO data" : (d.provenance + " data")),
       el("span", {}, "Scans ", el("b", {text: `${s.valid} good`}), ` / ${s.total} (${Math.round(s.coverage * 100)}% coverage)`),
       el("span", {}, "Last scan ", el("b", {text: fmt(s.latest_at)})),
       s.regime ? el("span", {}, "Regime ", el("b", {text: s.regime})) : null,

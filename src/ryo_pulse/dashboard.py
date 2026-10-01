@@ -174,7 +174,15 @@ def _params(query: dict[str, list[str]]) -> tuple[PulseThresholds, int | None, l
 
 
 def make_handler(load: Callable[[], list[Snapshot]]) -> type[BaseHTTPRequestHandler]:
-    page = resources.files("ryo_pulse").joinpath("web/index.html").read_bytes()
+    web = resources.files("ryo_pulse").joinpath("web")
+    pages = {
+        "/": ("landing.html", "text/html; charset=utf-8"),
+        "/index.html": ("landing.html", "text/html; charset=utf-8"),
+        "/board": ("board.html", "text/html; charset=utf-8"),
+        "/static/theme.css": ("theme.css", "text/css; charset=utf-8"),
+        "/static/theme.js": ("theme.js", "text/javascript; charset=utf-8"),
+    }
+    files = {route: (web.joinpath(name).read_bytes(), ctype) for route, (name, ctype) in pages.items()}
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "RyoPulse/0.1"
@@ -193,8 +201,9 @@ def make_handler(load: Callable[[], list[Snapshot]]) -> type[BaseHTTPRequestHand
 
         def do_GET(self) -> None:  # noqa: N802 (stdlib name)
             url = urlparse(self.path)
-            if url.path in ("/", "/index.html"):
-                return self._send(HTTPStatus.OK, page, "text/html; charset=utf-8")
+            if url.path in files:
+                body, ctype = files[url.path]
+                return self._send(HTTPStatus.OK, body, ctype)
             if url.path == "/api/board":
                 try:
                     th, window, watch = _params(parse_qs(url.query))

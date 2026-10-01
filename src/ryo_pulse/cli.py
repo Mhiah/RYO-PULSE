@@ -6,7 +6,7 @@
   ryo-pulse pulse TOKEN [--profile H | --fixture F] [--last N] [--json] [--save F]
   ryo-pulse board   [--profile H | --fixture F] [--last N]         classify every token seen
   ryo-pulse replay  RESULT.json [--fixture F]     recompute and check a saved result's replay_hash
-  ryo-pulse serve   [--fixture F] [--port 8765]   local read-only dashboard (Track 2)
+  ryo-pulse serve   [--fixture F] [--port 8765]   landing page + read-only dashboard (Track 2)
 """
 
 from __future__ import annotations

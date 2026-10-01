@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RYO Pulse</title>
+<meta name="description" content="RYO Pulse: a read-only RYO skill that tells you whether a token keeps showing up across comparable scans.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c5ff4a'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%230f1600' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script src="/static/theme.js"></script>
+<link rel="stylesheet" href="/static/theme.css">
+<style>
+.hero{padding:64px 0 40px;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-40% -10% auto auto;width:720px;height:720px;background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 28%,transparent),transparent);pointer-events:none;z-index:0}
+.hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.eyebrow b{color:var(--accent-text)}
+h1{font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.035em;margin:14px 0 16px;font-weight:850}
+h1 .hl{background:var(--accent);color:var(--accent-ink);padding:0 .18em;border-radius:.18em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{font-size:18px;color:var(--muted);max-width:34em;margin:0 0 26px}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+
+.live-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}
+.live-card header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.live-card h2{font-size:14px;margin:0;color:var(--muted);font-weight:700}
+.strip-row{display:grid;grid-template-columns:5.5em 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.strip-row:first-of-type{border-top:0}
+.strip-row .tok{font-weight:800;font-variant-numeric:tabular-nums}
+.cells{display:flex;gap:3px;min-width:0;overflow:hidden}
+.cells i{flex:0 0 10px;height:22px;border-radius:3px;background:var(--cell-off)}
+.cells i.on{background:var(--cell-on);box-shadow:inset 0 0 0 1.5px var(--cell-edge)}
+.live-card footer{margin-top:12px;color:var(--muted);font-size:13px}
+.empty{color:var(--muted);font-size:14px;padding:20px 0}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stat .n{white-space:nowrap;font-size:26px;font-weight:850;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .l{color:var(--muted);font-size:13px;font-weight:600}
+
+section.block{padding:56px 0;border-top:1px solid var(--line)}
+section.block h2{font-size:clamp(24px,3.2vw,34px);letter-spacing:-.02em;margin:0 0 10px;line-height:1.15}
+section.block .sub{color:var(--muted);font-size:16px;max-width:44em;margin:0 0 28px}
+.kicker{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin:0 0 8px}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card h3{margin:0 0 6px;font-size:17px}
+.card p{margin:0;color:var(--muted)}
+.card.accent{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 30%,transparent)}
+.mini{display:flex;gap:4px;margin:14px 0 4px}
+.mini i{width:22px;height:22px;border-radius:5px;background:var(--line)}
+.mini i.on{background:var(--cell-on);box-shadow:inset 0 0 0 1.5px var(--cell-edge)}
+.mini i.q{background:transparent;border:2px dashed var(--line)}
+
+.statuses{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.statuses .card .st{font-size:15px;margin-bottom:8px}
+.statuses .card p{font-size:14px}
+
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rules .card .ico{width:38px;height:38px;border-radius:10px;background:var(--accent-soft);display:grid;place-items:center;margin-bottom:12px;color:var(--accent-text)}
+.rules .card .ico svg{width:20px;height:20px}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:step}
+.steps .card{position:relative;padding-top:52px}
+.steps .card::before{counter-increment:step;content:counter(step);position:absolute;top:16px;left:20px;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:850;display:grid;place-items:center;font-size:14px}
+.steps code{display:inline-block;margin-top:10px;background:var(--chip);border:1px solid var(--line);padding:4px 8px;border-radius:7px;color:var(--ink)}
+
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:2px 8px;border-radius:6px;background:var(--accent);color:var(--accent-ink);margin-bottom:10px}
+
+.final{padding:64px 0;text-align:center;border-top:1px solid var(--line)}
+.final h2{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;margin:0 0 18px}
+footer.site{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:13px}
+footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+
+@media (max-width:960px){
+  .hero .wrap{grid-template-columns:1fr}
+  .statuses{grid-template-columns:repeat(2,1fr)}
+  .rules,.steps{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .hero{padding:36px 0 24px}
+  .compare,.tracks{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .statuses{grid-template-columns:1fr}
+  .nav .hide-sm{display:none}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="RYO Pulse home">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 13h4l2.5-6 4 11 2.5-5H22" fill="none" stroke="#0f1600" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      RYO Pulse
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a class="hide-sm" href="#how">How it works</a>
+      <a class="hide-sm" href="#honest">Honest by design</a>
+      <a href="/board">Dashboard</a>
+      <button class="theme-toggle" type="button" data-theme-toggle>
+        <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" fill="currentColor"/></svg>
+        <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></g></svg>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<main id="main">
+  <section class="hero" aria-labelledby="h-hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">A <b>RYO-CHAN</b> research skill · read-only</span>
+        <h1 id="h-hero">One scan shows a signal.<br><span class="hl">Repeated scans</span> reveal persistence.</h1>
+        <p class="lede">RYO's <code>scan_market</code> tells you who shows up <em>now</em>. Pulse tells you whether a token <strong>keeps</strong> showing up under the same scan, or was just a flash. It gives one honest status, with the reasons, and a hash you can replay.</p>
+        <div class="cta">
+          <a class="btn primary lg" href="/board">Open the dashboard <span aria-hidden="true">→</span></a>
+          <a class="btn lg" href="#how">How it works</a>
+        </div>
+        <div class="stats" id="stats" aria-live="polite"></div>
+      </div>
+
+      <div class="live-card" aria-labelledby="h-live">
+        <header>
+          <h2 id="h-live">Most persistent right now</h2>
+          <span id="srcPill"></span>
+        </header>
+        <div id="strips"><p class="empty">Loading your scans…</p></div>
+        <footer id="liveFoot"></footer>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-gap">
+    <div class="wrap">
+      <p class="kicker">The gap</p>
+      <h2 id="h-gap">A single hit isn't a pattern</h2>
+      <p class="sub">Agents treat one appearance in a momentum scan as a lasting signal. RYO had no tool that asks: <em>did this token keep showing up under the same scan?</em></p>
+      <div class="compare">
+        <div class="card">
+          <h3>scan_market: one moment</h3>
+          <div class="mini" aria-hidden="true"><i class="q"></i><i class="q"></i><i class="q"></i><i class="q"></i><i class="on"></i></div>
+          <p>"PEPE is ranked #1." But was it there an hour ago? Will it be there next scan?</p>
+        </div>
+        <div class="card accent">
+          <h3>Pulse: the pattern</h3>
+          <div class="mini" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i><i class="on"></i></div>
+          <p>"PEPE is <strong>emerging</strong>: first seen 2 scans ago, present in the newest." It's a real signal, but not a pattern yet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-status">
+    <div class="wrap">
+      <p class="kicker">One status, always</p>
+      <h2 id="h-status">Five honest answers</h2>
+      <p class="sub">Each status comes with counts, coverage, first and last seen, a streak and a plain-language reason. There's no LLM judgement and no price prediction.</p>
+      <div class="statuses">
+        <div class="card"><span class="st persistent">persistent</span><p>Keeps showing up across the window.</p></div>
+        <div class="card"><span class="st emerging">emerging</span><p>Showing up now, only recently. A signal, not yet a pattern.</p></div>
+        <div class="card"><span class="st transient">transient</span><p>Showed up, then faded or appeared only sporadically.</p></div>
+        <div class="card"><span class="st absent">absent</span><p>Enough good scans, and it never appeared.</p></div>
+        <div class="card"><span class="st insufficient">insufficient</span><p>Not enough comparable, successful scans to say.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="honest" aria-labelledby="h-honest">
+    <div class="wrap">
+      <p class="kicker">Honest by design</p>
+      <h2 id="h-honest">It won't invent absence</h2>
+      <p class="sub">Most scanners quietly turn an outage into "not there". Pulse refuses to.</p>
+      <div class="rules">
+        <div class="card">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></div>
+          <h3>Outages lower coverage</h3>
+          <p>A failed or "unavailable" scan is stored as failed. It never counts as the token being gone, and if coverage drops the answer is <em>insufficient</em>.</p>
+        </div>
+        <div class="card">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h10M4 17h6"/></svg></div>
+          <h3>Like is compared with like</h3>
+          <p>Every scan's settings are hashed into a profile. Scans with different settings are excluded, so one hash means one comparable series.</p>
+        </div>
+        <div class="card">
+          <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div>
+          <h3>Replayable</h3>
+          <p>Each result carries a <code>replay_hash</code>. <code>ryo-pulse replay</code> rebuilds it from the stored scans and proves nothing changed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="how" aria-labelledby="h-how">
+    <div class="wrap">
+      <p class="kicker">How it works</p>
+      <h2 id="h-how">Collect, classify, monitor</h2>
+      <p class="sub">Pulse uses RYO's read-only research tools over MCP. It can't buy, sell or move anything.</p>
+      <div class="steps">
+        <div class="card"><h3>Collect</h3><p>Take a <code>scan_market</code> snapshot on a schedule, with <code>market_overview</code> regime context alongside.</p><code>ryo-pulse collect -p top_n=20 --every 30</code></div>
+        <div class="card"><h3>Classify</h3><p>A deterministic engine compares a token's presence across comparable snapshots and returns one status.</p><code>ryo-pulse pulse SOL</code></div>
+        <div class="card"><h3>Monitor</h3><p>The dashboard puts what changed since the last scan first, sorted by importance, with settings you control.</p><code>ryo-pulse serve</code></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-tracks">
+    <div class="wrap">
+      <p class="kicker">RYO-CHAN Hackathon 2026</p>
+      <h2 id="h-tracks">Two halves, each judgeable on its own</h2>
+      <div class="tracks">
+        <div class="card"><span class="tag">Track 3 · New Skills</span><h3>The Pulse skill</h3><p>A JSON-in, JSON-out contract (<code>scan_persistence</code>) with published schemas. Deterministic, read-only and ready to sit next to RYO's tools.</p></div>
+        <div class="card"><span class="tag">Track 2 · Dashboards</span><h3>The Pulse dashboard</h3><p>Shows what changed and why within 30 seconds. It's sorted by importance, works by keyboard alone, and has day and night modes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2>See what's actually persisting.</h2>
+      <a class="btn primary lg" href="/board">Open the dashboard <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>RYO Pulse · read-only research skill built on RYO's research tools</span>
+    <span>Press <kbd>t</kbd> to switch day and night</span>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) k === "class" ? (n.className = v) : k === "text" ? (n.textContent = v) : n.setAttribute(k, v);
+    for (const k of kids) if (k != null) n.append(k);
+    return n;
+  };
+  const ago = (iso) => {
+    if (!iso) return "–";
+    const m = Math.round((Date.now() - new Date(iso)) / 60000);
+    return m < 1 ? "just now" : m < 60 ? m + "m ago" : m < 1440 ? Math.round(m / 60) + "h ago" : Math.round(m / 1440) + "d ago";
+  };
+  fetch("/api/board", {cache: "no-store"}).then((r) => r.json()).then((d) => {
+    const s = d.scans || {};
+    const stat = (n, l) => el("div", {class: "stat"}, el("div", {class: "n", text: String(n)}), el("div", {class: "l", text: l}));
+    $("stats").replaceChildren(
+      stat(s.valid ?? 0, "good scans"),
+      stat(d.rows ? d.rows.length : 0, "tokens tracked"),
+      stat((d.counts && d.counts.persistent) || 0, "persistent"),
+      stat(ago(s.latest_at), "last scan"),
+    );
+    const live = d.provenance === "live";
+    $("srcPill").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? "Live RYO data" : (d.provenance === "none" ? "No data yet" : d.provenance + " data")));
+    const rows = (d.rows || []).slice().sort((a, b) => (b.hit_ratio || 0) - (a.hit_ratio || 0) || (b.streak - a.streak)).slice(0, 6);
+    const box = $("strips");
+    if (!rows.length) {
+      box.replaceChildren(el("p", {class: "empty"}, "No scans yet. Start collecting with ", el("code", {text: "ryo-pulse collect -p top_n=20 --every 30"}), "."));
+    } else {
+      box.replaceChildren(...rows.map((r) => {
+        const cells = el("div", {class: "cells", role: "img", "aria-label": `${r.token} seen in ${r.presence.filter(Boolean).length} of the last ${r.presence.length} good scans`});
+        r.presence.forEach((on) => cells.append(el("i", on ? {class: "on"} : {})));
+        return el("div", {class: "strip-row"}, el("span", {class: "tok", text: r.token}), cells, el("span", {class: "st " + r.status, text: r.status}));
+      }));
+    }
+    $("liveFoot").textContent = s.total ? `${s.valid} of ${s.total} scans succeeded · ${Math.round((s.coverage || 0) * 100)}% coverage · from your local scan store` : "";
+  }).catch(() => {
+    $("strips").replaceChildren(el("p", {class: "empty", text: "Couldn't read the local scans. Is ryo-pulse serve running?"}));
+  });
+})();
+</script>
+</body>
+</html>
