@@ -14,8 +14,9 @@
 .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 .eyebrow b{color:var(--accent-text)}
-h1{font-size:clamp(36px,6vw,64px);line-height:1.02;letter-spacing:-.035em;margin:14px 0 16px;font-weight:850}
-h1 .hl{background:var(--accent);color:var(--accent-ink);padding:0 .18em;border-radius:.18em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+h1{font-size:clamp(36px,6vw,64px);line-height:1.12;letter-spacing:-.035em;margin:14px 0 16px;font-weight:850}
+/* inline-block so the highlight takes part in line height and never covers the line above */
+h1 .hl{display:inline-block;line-height:1.08;margin:.08em 0;background:var(--accent);color:var(--accent-ink);padding:.02em .18em .06em;border-radius:.16em}
 .lede{font-size:18px;color:var(--muted);max-width:34em;margin:0 0 26px}
 .cta{display:flex;flex-wrap:wrap;gap:10px}
 
