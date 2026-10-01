@@ -227,7 +227,7 @@ form.grid .hint{color:var(--muted);font-size:12px}
     $("meta").replaceChildren(
       fact("Good scans", `${s.valid} of ${s.total}`, `${Math.round(s.coverage * 100)}% coverage`),
       fact("Last scan", fmt(s.latest_at), s.latest_ok ? "succeeded" : "failed"),
-      fact("Market mood", s.regime || "–", "from RYO market_overview"),
+      fact("Market mood", s.regime ? (s.regime.charAt(0).toUpperCase() + s.regime.slice(1)).replace(/[_-]+/g, " ") : "–", "from RYO market_overview"),
       fact("Scan settings", scanSettings(d.profile_params), "only same-setting scans are compared", "settings id " + (d.profile_hash || "–")),
     );
 
