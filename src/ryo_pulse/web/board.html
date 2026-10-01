@@ -59,6 +59,7 @@ code{word-break:break-all}
 .legend .ok::before{background:var(--ok)} .legend .failed::before{background:var(--fail)} .legend .drifted::before{background:var(--drift)}
 .title{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
 dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px 28px;width:min(640px,calc(100vw - 32px))}
+.note{margin:0 2px;font-size:14px}
 dialog::backdrop{background:rgba(0,0,0,.6)}
 dialog h2{font-size:20px;margin:0 0 4px}
 dialog > p{margin:0}
@@ -147,6 +148,7 @@ form.grid .hint{color:var(--muted);font-size:12px}
     <div class="legend"><span class="ok">ok</span><span class="failed">failed (not counted as absence)</span><span class="drifted">different scan settings (excluded)</span></div>
   </section>
 
+  <p class="muted note">Read-only: this page never trades or calls RYO. It reads the scans <code>ryo-pulse collect</code> stored.</p>
 </main>
 
 <dialog id="settingsDlg" aria-labelledby="h-settings">
