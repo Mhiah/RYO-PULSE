@@ -2,7 +2,20 @@
 
 **One scan shows a signal. Repeated scans reveal persistence.**
 
-RYO Pulse is a **Track 3 (New Skills)** entry, with a separate **Track 2 (Dashboards & Interfaces)** half (see [Dashboard](#dashboard-track-2)), for the RYO-CHAN Hackathon 2026. It is a read-only research skill: given a token and a window of **comparable** `scan_market` snapshots (same scan profile), it returns one status:
+> **RYO-CHAN Hackathon 2026 · Track 3 (New Skills) + Track 2 (Dashboards & Interfaces)**
+
+RYO Pulse is one product entered in two tracks:
+
+| Track | What we built | Where |
+|---|---|---|
+| **3 · New Skills** | `scan_persistence`, a read-only skill that tells an agent whether a token *keeps* showing up across RYO `scan_market` scans | [The skill](#the-skill-track-3) |
+| **2 · Dashboards & Interfaces** | A landing page and a "What changed and why" dashboard to configure and monitor that skill on live RYO data | [Dashboard](#dashboard-track-2) |
+
+The skill is the engine; the dashboard is how people see and steer it. Every number on the dashboard comes from the same skill, and each half can also be judged on its own.
+
+## The skill (Track 3)
+
+Given a token and a window of **comparable** `scan_market` snapshots (same scan profile), the skill returns one status:
 
 | Status | Meaning |
 |---|---|
@@ -93,7 +106,7 @@ The adapter reads **only field paths you confirmed from a real response**. Nothi
 | `PULSE_DATA_DIR` | no | Local snapshot store. Default `data/snapshots` |
 | `TAVILY_API_KEY`, `OPENROUTER_API_KEY` | no | Not used by the core skill |
 
-## Example: one real call
+## Example: one real skill call (Track 3)
 
 From live RYO scans on Oct 1 2026 (`scan_market`, top 20, 11 scans of which 4 failed during a RYO outage). Input, abbreviated:
 
