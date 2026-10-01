@@ -62,7 +62,6 @@ section.block .sub{color:var(--muted);font-size:16px;max-width:44em;margin:0 0 2
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;counter-reset:step}
 .steps .card{position:relative;padding-top:52px}
 .steps .card::before{counter-increment:step;content:counter(step);position:absolute;top:16px;left:20px;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-weight:850;display:grid;place-items:center;font-size:14px}
-.steps code{display:inline-block;margin-top:10px;background:var(--chip);border:1px solid var(--line);padding:4px 8px;border-radius:7px;color:var(--ink)}
 
 
 .final{padding:72px 0;text-align:center;background:var(--bg);color:var(--ink)}
@@ -107,7 +106,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
       <div>
         <span class="eyebrow">A <b>RYO-CHAN</b> research skill · read-only</span>
         <h1 id="h-hero">One scan shows a signal.<br><span class="hl">Repeated scans</span> reveal persistence.</h1>
-        <p class="lede">RYO's <code>scan_market</code> tells you who shows up <em>now</em>. Pulse tells you whether a token <strong>keeps</strong> showing up under the same scan, or was just a flash. It gives one honest status, with the reasons, and a hash you can replay.</p>
+        <p class="lede">RYO's market scan tells you who shows up <em>now</em>. Pulse tells you whether a token <strong>keeps</strong> showing up under the same scan, or was just a flash. It gives one honest status, with the reasons, and a code you can replay.</p>
         <div class="cta">
           <a class="btn primary lg" href="/board">Open the dashboard <span aria-hidden="true">→</span></a>
           <a class="btn lg" href="#how">How it works</a>
@@ -179,7 +178,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
         <div class="card">
           <div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div>
           <h3>Replayable</h3>
-          <p>Each result carries a <code>replay_hash</code>. <code>ryo-pulse replay</code> rebuilds it from the stored scans and proves nothing changed.</p>
+          <p>Every answer comes with a replay code. Rerun it from the saved scans and you get the exact same result, so nothing can be quietly changed.</p>
         </div>
       </div>
     </div>
@@ -191,9 +190,9 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
       <h2 id="h-how">Collect, classify, monitor</h2>
       <p class="sub">Pulse uses RYO's read-only research tools over MCP. It can't buy, sell or move anything.</p>
       <div class="steps">
-        <div class="card"><h3>Collect</h3><p>Take a <code>scan_market</code> snapshot on a schedule, with <code>market_overview</code> regime context alongside.</p><code>ryo-pulse collect -p top_n=20 --every 30</code></div>
-        <div class="card"><h3>Classify</h3><p>A deterministic engine compares a token's presence across comparable snapshots and returns one status.</p><code>ryo-pulse pulse SOL</code></div>
-        <div class="card"><h3>Monitor</h3><p>The dashboard puts what changed since the last scan first, sorted by importance, with settings you control.</p><code>ryo-pulse serve</code></div>
+        <div class="card"><h3>Collect</h3><p>Pulse takes a RYO market scan on a schedule, along with RYO's read on the market mood.</p></div>
+        <div class="card"><h3>Classify</h3><p>It compares each token across scans taken with the same settings and gives one clear status.</p></div>
+        <div class="card"><h3>Monitor</h3><p>The dashboard shows what changed since the last scan first, most important on top, with settings you control.</p></div>
       </div>
     </div>
   </section>
