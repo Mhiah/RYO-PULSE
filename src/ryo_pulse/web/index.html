@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RYO Pulse</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --bg:#f7f8f6; --panel:#ffffff; --ink:#15181a; --muted:#5b6369; --line:#dde1e3; --focus:#1d5fd1;
+  --persistent:#17663a; --emerging:#0b5d8f; --transient:#8a5a00; --absent:#5b6369; --insufficient:#a3241c;
+  --ok:#17663a; --fail:#a3241c; --drift:#8a5a00; --chip:#eef1f2;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0e1112; --panel:#161a1c; --ink:#e9eef0; --muted:#9aa5ab; --line:#2a3135; --focus:#7fb0ff;
+    --persistent:#5fd68f; --emerging:#6cc4ff; --transient:#f0b44c; --absent:#9aa5ab; --insufficient:#ff8a80;
+    --ok:#5fd68f; --fail:#ff8a80; --drift:#f0b44c; --chip:#20272a;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--focus)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--panel);padding:8px 12px;z-index:9}
+.skip:focus{left:8px}
+header,main{max-width:1180px;margin:0 auto;padding:16px}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;justify-content:space-between}
+h1{font-size:22px;margin:0}
+h1 small{font-weight:400;color:var(--muted);font-size:14px;margin-left:8px}
+h2{font-size:16px;margin:0 0 10px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--muted);font-size:14px}
+.meta b{color:var(--ink);font-weight:600}
+.badge{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em;border:1px solid currentColor}
+.live{color:var(--ok)} .fixture{color:var(--insufficient)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:0 0 14px}
+.alert{border-color:var(--fail)}
+.alert p{margin:0;color:var(--fail);font-weight:600}
+.changes{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.changes li{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.changes .why{color:var(--muted);font-size:14px}
+.tok{font-weight:700;font-variant-numeric:tabular-nums;min-width:4.5em}
+.st{display:inline-flex;align-items:center;gap:5px;font-weight:600;font-size:13px;white-space:nowrap}
+.st::before{content:"";width:9px;height:9px;display:inline-block}
+.st.persistent{color:var(--persistent)} .st.persistent::before{background:var(--persistent);border-radius:50%}
+.st.emerging{color:var(--emerging)} .st.emerging::before{background:var(--emerging);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.st.transient{color:var(--transient)} .st.transient::before{border:2px solid var(--transient);border-radius:50%;width:5px;height:5px}
+.st.absent{color:var(--absent)} .st.absent::before{background:var(--absent);height:2px}
+.st.insufficient{color:var(--insufficient)} .st.insufficient::before{background:var(--insufficient);clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+.arrow{color:var(--muted)}
+.inout{margin:10px 0 0;color:var(--muted);font-size:14px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
+.filters button,.btn{font:inherit;font-size:14px;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
+.filters button[aria-pressed="true"]{border-color:var(--ink);font-weight:700}
+.filters input{font:inherit;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);min-width:12em}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+tr.watched td:first-child{box-shadow:inset 3px 0 0 var(--focus)}
+.rowbtn{all:unset;cursor:pointer;font-weight:700}
+.rowbtn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.presence{display:flex;gap:2px}
+.presence i{width:7px;height:16px;border-radius:2px;background:var(--line)}
+.presence i.on{background:var(--ink)}
+.why{color:var(--muted)}
+.detail td{background:var(--chip);font-size:14px}
+.detail ul{margin:4px 0;padding-left:18px}
+code{font:12px ui-monospace,SFMono-Regular,Consolas,monospace;word-break:break-all}
+.timeline{display:flex;flex-wrap:wrap;gap:3px;margin:6px 0}
+.timeline i{width:12px;height:12px;border-radius:2px}
+.timeline .ok{background:var(--ok)} .timeline .failed{background:var(--fail)} .timeline .drifted{background:var(--drift)}
+.legend{display:flex;gap:14px;color:var(--muted);font-size:13px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.legend .ok::before{background:var(--ok)} .legend .failed::before{background:var(--fail)} .legend .drifted::before{background:var(--drift)}
+details.settings summary{cursor:pointer;font-weight:600}
+form.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px 16px;margin-top:12px}
+form.grid label{display:grid;gap:3px;font-size:14px}
+form.grid input{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink)}
+form.grid .hint{color:var(--muted);font-size:12px}
+.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+kbd{font:12px ui-monospace,monospace;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px}
+@media (max-width:640px){.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#board">Skip to tokens</a>
+<header>
+  <h1>RYO Pulse <small>One scan shows a signal. Repeated scans reveal persistence.</small></h1>
+  <div class="meta" id="meta" aria-label="Data source">Loading…</div>
+</header>
+<main>
+  <p id="live" class="sr" aria-live="polite"></p>
+  <section id="alert" class="alert" hidden><p id="alertText"></p></section>
+
+  <section aria-labelledby="h-changes">
+    <h2 id="h-changes">What changed since the last scan</h2>
+    <ul class="changes" id="changes"></ul>
+    <p class="inout" id="inout"></p>
+  </section>
+
+  <section aria-labelledby="h-board" id="board" tabindex="-1">
+    <h2 id="h-board">Tokens, most important first</h2>
+    <div class="filters" role="group" aria-label="Filter by status">
+      <span id="filterBtns"></span>
+      <label class="sr" for="q">Find token</label>
+      <input id="q" type="search" placeholder="Find token  ( / )" autocomplete="off">
+    </div>
+    <div class="tablewrap">
+      <table>
+        <caption class="sr">Each token's persistence status across comparable scans</caption>
+        <thead><tr>
+          <th scope="col">Token</th><th scope="col">Status</th><th scope="col">Seen</th>
+          <th scope="col" class="hide-sm">Streak</th><th scope="col" class="hide-sm">Rank now</th>
+          <th scope="col" class="hide-sm">Last 24 scans</th><th scope="col">Why</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-health">
+    <h2 id="h-health">Scan health</h2>
+    <div class="timeline" id="timeline" role="img"></div>
+    <div class="legend"><span class="ok">ok</span><span class="failed">failed (not counted as absence)</span><span class="drifted">different scan settings (excluded)</span></div>
+  </section>
+
+  <section>
+    <details class="settings" id="settingsBox">
+      <summary>Settings: window, thresholds, watchlist</summary>
+      <form class="grid" id="settings">
+        <label>Window (newest scans)<input name="window" type="number" min="1" placeholder="all"><span class="hint">Blank = every stored scan</span></label>
+        <label>Min comparable scans<input name="min_valid" type="number" min="1"><span class="hint">Fewer → insufficient</span></label>
+        <label>Min coverage<input name="min_coverage" type="number" min="0" max="1" step="0.05"><span class="hint">Good scans ÷ all scans</span></label>
+        <label>Persistent ratio<input name="persistent_ratio" type="number" min="0.05" max="1" step="0.05"><span class="hint">Seen ÷ comparable scans</span></label>
+        <label>Persistent min hits<input name="persistent_min_hits" type="number" min="1"></label>
+        <label>Watchlist<input name="watch" type="text" placeholder="BTC, SOL, INJ"><span class="hint">Pinned to the top, even if never seen</span></label>
+        <div><button class="btn" type="submit">Apply</button> <button class="btn" type="button" id="reset">Defaults</button></div>
+      </form>
+    </details>
+    <p class="muted" style="margin:10px 0 0">Keys: <kbd>/</kbd> find · <kbd>r</kbd> refresh · <kbd>1</kbd>–<kbd>5</kbd> filter status · <kbd>0</kbd> all. Read-only: this page never trades or calls RYO; it reads the scans <code>ryo-pulse collect</code> stored.</p>
+  </section>
+</main>
+<script>
+(() => {
+  const ORDER = ["emerging","persistent","transient","absent","insufficient"];
+  const LABEL = {emerging:"emerging",persistent:"persistent",transient:"transient",absent:"absent",insufficient:"insufficient"};
+  const KEY = "ryo-pulse-settings";
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") n.className = v; else if (k === "text") n.textContent = v; else n.setAttribute(k, v);
+    }
+    for (const k of kids) if (k != null) n.append(k);
+    return n;
+  };
+  const status = (s) => el("span", {class: "st " + s, text: LABEL[s] || s});
+  const fmt = (iso) => iso ? new Date(iso).toLocaleString([], {month:"short", day:"numeric", hour:"2-digit", minute:"2-digit"}) : "–";
+
+  let settings = {};
+  try { settings = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { settings = {}; }
+  let filter = null, data = null, open = new Set();
+
+  function fillForm() {
+    const f = $("settings");
+    for (const i of f.elements) if (i.name) i.value = settings[i.name] ?? "";
+  }
+  function query() {
+    const p = new URLSearchParams();
+    for (const [k, v] of Object.entries(settings)) if (v !== "" && v != null) p.set(k, v);
+    return p.toString();
+  }
+
+  async function load(announce) {
+    try {
+      const r = await fetch("/api/board?" + query(), {cache: "no-store"});
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || r.statusText);
+      data = j; render();
+      if (announce) $("live").textContent = "Updated " + new Date().toLocaleTimeString();
+    } catch (e) {
+      $("alert").hidden = false; $("alertText").textContent = "Could not load: " + e.message;
+    }
+  }
+
+  function render() {
+    const d = data, s = d.scans;
+    const meta = $("meta"); meta.replaceChildren();
+    meta.append(
+      el("span", {class: "badge " + (d.provenance === "live" ? "live" : "fixture"), text: d.provenance === "live" ? "LIVE RYO DATA" : (d.provenance.toUpperCase() + " DATA")}),
+      el("span", {}, "Scans ", el("b", {text: `${s.valid} good`}), ` / ${s.total} (${Math.round(s.coverage * 100)}% coverage)`),
+      el("span", {}, "Last scan ", el("b", {text: fmt(s.latest_at)})),
+      s.regime ? el("span", {}, "Regime ", el("b", {text: s.regime})) : null,
+      el("span", {text: "Scan " + JSON.stringify(d.profile_params || {}) + " · " + (d.profile_hash || "–")}),
+    );
+
+    const alert = $("alert");
+    if (!s.total) { alert.hidden = false; $("alertText").textContent = "No scans yet. Run: ryo-pulse collect -p top_n=20 --every 30"; }
+    else if (!s.latest_ok) { alert.hidden = false; $("alertText").textContent = "Latest scan failed: " + (s.latest_error || "different scan settings") + ". It lowers coverage; it is not counted as absence."; }
+    else alert.hidden = true;
+
+    const ch = $("changes"); ch.replaceChildren();
+    if (!d.changes.length) ch.append(el("li", {class: "muted", text: s.total < 2 ? "Need at least two scans to compare." : "No status changes in the latest scan."}));
+    for (const c of d.changes) ch.append(el("li", {}, el("span", {class: "tok", text: c.token}), status(c.from), el("span", {class: "arrow", "aria-label": "became", text: "→"}), status(c.to), el("span", {class: "why", text: c.why})));
+    const io = [];
+    if (d.entered.length) io.push("New in latest scan: " + d.entered.join(", "));
+    if (d.dropped.length) io.push("Dropped out: " + d.dropped.join(", "));
+    $("inout").textContent = io.join(" · ");
+
+    const fb = $("filterBtns"); fb.replaceChildren();
+    const mk = (key, text, n) => {
+      const b = el("button", {type: "button", "aria-pressed": String(filter === key)}, text + (n != null ? ` ${n}` : ""));
+      b.onclick = () => { filter = key; render(); };
+      return b;
+    };
+    fb.append(mk(null, "All", d.rows.length), " ");
+    ORDER.forEach((k) => fb.append(mk(k, LABEL[k], d.counts[k]), " "));
+
+    const q = $("q").value.trim().toUpperCase();
+    const tb = $("rows"); tb.replaceChildren();
+    const rows = d.rows.filter((r) => (!filter || r.status === filter) && (!q || r.token.includes(q)));
+    if (!rows.length) tb.append(el("tr", {}, el("td", {colspan: "7", class: "muted", text: "No tokens match."})));
+    for (const r of rows) {
+      const id = "d-" + r.token.replace(/[^A-Z0-9]/g, "_");
+      const btn = el("button", {class: "rowbtn", type: "button", "aria-expanded": String(open.has(r.token)), "aria-controls": id, text: r.token});
+      btn.onclick = () => { open.has(r.token) ? open.delete(r.token) : open.add(r.token); render(); document.querySelector(`[aria-controls="${id}"]`)?.focus(); };
+      const pres = el("div", {class: "presence", role: "img", "aria-label": `seen in ${r.presence.filter(Boolean).length} of the last ${r.presence.length} good scans`});
+      r.presence.forEach((on) => pres.append(el("i", on ? {class: "on"} : {})));
+      tb.append(el("tr", {class: r.watched ? "watched" : ""},
+        el("td", {}, btn, r.watched ? el("span", {class: "sr", text: " (watched)"}) : null),
+        el("td", {}, status(r.status)),
+        el("td", {text: `${r.hits}/${r.valid}`}),
+        el("td", {class: "hide-sm", text: String(r.streak)}),
+        el("td", {class: "hide-sm", text: r.latest_rank ? "#" + r.latest_rank : "–"}),
+        el("td", {class: "hide-sm"}, pres),
+        el("td", {class: "why", text: r.why}),
+      ));
+      if (open.has(r.token)) {
+        const ul = el("ul"); r.reasons.forEach((x) => ul.append(el("li", {}, el("code", {text: x.code}), " " + x.detail)));
+        tb.append(el("tr", {class: "detail", id},
+          el("td", {colspan: "7"},
+            el("div", {text: `First seen ${fmt(r.first_seen)} · last seen ${fmt(r.last_seen)} · best rank ${r.best_rank ?? "–"}`}),
+            ul,
+            el("div", {}, "Reproduce: ", el("code", {text: `ryo-pulse pulse ${r.token}` + (d.window ? ` --last ${d.window}` : "")})),
+            el("div", {}, "replay_hash ", el("code", {text: r.replay_hash})),
+          )));
+      }
+    }
+
+    const tl = $("timeline"); tl.replaceChildren();
+    const okN = d.timeline.filter((t) => t.state === "ok").length;
+    tl.setAttribute("aria-label", `${okN} of the last ${d.timeline.length} scans succeeded`);
+    for (const t of d.timeline) tl.append(el("i", {class: t.state, title: `${fmt(t.at)} · ${t.state}${t.error ? " · " + t.error : ` · ${t.tokens} tokens`}`}));
+  }
+
+  $("settings").addEventListener("submit", (e) => {
+    e.preventDefault();
+    settings = Object.fromEntries(new FormData(e.target).entries());
+    try { localStorage.setItem(KEY, JSON.stringify(settings)); } catch (err) {}
+    load(true);
+  });
+  $("reset").onclick = () => { settings = {}; try { localStorage.removeItem(KEY); } catch (err) {} fillForm(); load(true); };
+  $("q").addEventListener("input", () => data && render());
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input, textarea")) { if (e.key === "Escape") e.target.blur(); return; }
+    if (e.key === "/") { e.preventDefault(); $("q").focus(); }
+    else if (e.key === "r") load(true);
+    else if (e.key === "0") { filter = null; data && render(); }
+    else if (/^[1-5]$/.test(e.key)) { filter = ORDER[+e.key - 1]; data && render(); }
+  });
+  fillForm(); load(false);
+  setInterval(() => load(true), 60000);
+})();
+</script>
+</body>
+</html>

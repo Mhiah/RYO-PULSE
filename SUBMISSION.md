@@ -2,7 +2,7 @@
 
 **Deadline: Sat Oct 3, 2026 · 23:59 JST (14:59 UTC).** Judging runs Oct 4–11 JST.
 
-Track: **3, New Skills**
+Tracks: **3, New Skills** (the Pulse skill) **+ 2, Dashboards & Interfaces** (`ryo-pulse serve`). Each half must stand on its own, and each is judged independently.
 
 ## Required
 - [ ] All final code pushed to the `main` branch of the **organizer's private repo** (mirror this repo there)

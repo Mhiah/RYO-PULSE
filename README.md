@@ -2,7 +2,7 @@
 
 **One scan shows a signal. Repeated scans reveal persistence.**
 
-RYO Pulse is a **Track 3 (New Skills)** entry for the RYO-CHAN Hackathon 2026. It is a read-only research skill: given a token and a window of **comparable** `scan_market` snapshots (same scan profile), it returns one status:
+RYO Pulse is a **Track 3 (New Skills)** entry, with a separate **Track 2 (Dashboards & Interfaces)** half (see [Dashboard](#dashboard-track-2)), for the RYO-CHAN Hackathon 2026. It is a read-only research skill: given a token and a window of **comparable** `scan_market` snapshots (same scan profile), it returns one status:
 
 | Status | Meaning |
 |---|---|
@@ -53,6 +53,25 @@ ryo-pulse replay results/btc.json               # recomputes and checks the repl
 
 The adapter reads **only field paths you confirmed from a real response**. Nothing about `scan_market`'s output shape is guessed in code.
 
+## Dashboard (Track 2)
+
+```bash
+ryo-pulse serve                      # opens http://127.0.0.1:8765, reads your stored live scans
+ryo-pulse serve --fixture tests/fixtures/demo_window.json   # offline demo (labelled FIXTURE DATA)
+```
+
+![Dashboard on the labelled synthetic fixture](docs/dashboard-fixture.png)
+
+A local, read-only screen for **configuring and monitoring** the Pulse skill. It answers "what changed and why" at a glance:
+
+- **What changed since the last scan** comes first: status transitions (for example `persistent → transient`) with the reason, plus the tokens that entered or dropped out of the newest scan.
+- **Tokens, most important first:** emerging, then persistent, transient and absent. Each row has hits, streak, current rank, a presence strip of the last 24 good scans and a plain-language *why*. Expand a row for every reason, a `ryo-pulse pulse` command to reproduce it and the `replay_hash`.
+- **Scan health:** ok, failed and drifted scans over time, plus a banner when the latest scan failed. Failures are never shown as absence.
+- **Settings:** window size, the four thresholds and a watchlist pinned to the top. These are saved per browser, sent to the same engine the skill uses, and the page refreshes every 60 s.
+- **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, light and dark themes, and phone width.
+
+It never calls RYO and has no new dependencies (Python stdlib server + one HTML file). Every number on screen comes from `engine.classify`, so the skill (Track 3) and the interface (Track 2) can each be judged on their own.
+
 ## How it works
 
 ```
@@ -99,6 +118,8 @@ src/ryo_pulse/
   collector.py  live scan_market (+ market_overview) → Snapshot
   skill.py      JSON-in/JSON-out entry + tool definition
   cli.py        rich CLI
+  dashboard.py  Track 2: board builder + local read-only HTTP server
+  web/index.html  the dashboard page (no build step, no external assets)
 tests/          offline tests; fixtures/ are SYNTHETIC and labelled as such
 docs/           design + JSON schemas
 ```

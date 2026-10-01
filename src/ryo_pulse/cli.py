@@ -6,6 +6,7 @@
   ryo-pulse pulse TOKEN [--profile H | --fixture F] [--last N] [--json] [--save F]
   ryo-pulse board   [--profile H | --fixture F] [--last N]         classify every token seen
   ryo-pulse replay  RESULT.json [--fixture F]     recompute and check a saved result's replay_hash
+  ryo-pulse serve   [--fixture F] [--port 8765]   local read-only dashboard (Track 2)
 """
 
 from __future__ import annotations
@@ -174,6 +175,38 @@ def cmd_replay(args) -> int:
     return 1
 
 
+def cmd_serve(args) -> int:
+    import webbrowser
+
+    from .dashboard import serve
+
+    if args.fixture:
+        load = lambda: load_fixture(args.fixture)  # noqa: E731
+    else:
+        store = SnapshotStore()
+
+        def load():
+            profile = args.profile
+            if not profile:
+                profiles = store.profiles()
+                # newest-written profile wins when several exist
+                profile = max(profiles, key=lambda h: max((p.stat().st_mtime for p in (store.root / h).rglob("*.json")), default=0)) if profiles else None
+            return store.load(profile)
+
+    httpd = serve(load, host="127.0.0.1", port=args.port)
+    url = f"http://127.0.0.1:{args.port}/"
+    console.print(f"RYO Pulse dashboard on [bold]{url}[/] (read-only; Ctrl+C to stop)")
+    if not args.no_browser:
+        webbrowser.open(url)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        console.print("stopped")
+    finally:
+        httpd.server_close()
+    return 0
+
+
 def cmd_profiles(args) -> int:
     store = SnapshotStore()
     for h in store.profiles():
@@ -268,6 +301,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("result")
     p.add_argument("--fixture")
     p.set_defaults(fn=cmd_replay)
+
+    p = sub.add_parser("serve", help="open the local read-only dashboard (Track 2)")
+    p.add_argument("--profile", help="profile hash in the local store (default: most recently written)")
+    p.add_argument("--fixture", help="serve a fixture JSON file instead of the store")
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--no-browser", action="store_true")
+    p.set_defaults(fn=cmd_serve)
 
     p = sub.add_parser("profiles", help="list stored scan profiles")
     p.set_defaults(fn=cmd_profiles)
