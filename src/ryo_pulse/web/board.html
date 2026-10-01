@@ -29,7 +29,6 @@ main section{background:var(--panel);border:1px solid var(--line);border-radius:
 .changes .why{color:var(--muted);font-size:14px}
 .tok{font-weight:700;font-variant-numeric:tabular-nums;min-width:4.5em}
 .arrow{color:var(--muted)}
-.inout{margin:10px 0 0;color:var(--muted);font-size:14px}
 .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
 #filterBtns{display:flex;flex-wrap:wrap;gap:10px}
 .filters button,.sbtn{font:inherit;font-size:14px;font-weight:600;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:6px 12px;cursor:pointer}
@@ -120,7 +119,6 @@ form.grid .hint{color:var(--muted);font-size:12px}
   <section class="changes-box" aria-labelledby="h-changes">
     <h2 id="h-changes">What changed since the last scan</h2>
     <ul class="changes" id="changes"></ul>
-    <p class="inout" id="inout"></p>
   </section>
 
   <section aria-labelledby="h-board" id="board" tabindex="-1">
@@ -239,10 +237,6 @@ form.grid .hint{color:var(--muted);font-size:12px}
     const ch = $("changes"); ch.replaceChildren();
     if (!d.changes.length) ch.append(el("li", {class: "muted", text: s.total < 2 ? "Need at least two scans to compare." : "No status changes in the latest scan."}));
     for (const c of d.changes) ch.append(el("li", {}, el("span", {class: "tok", text: c.token}), status(c.from), el("span", {class: "arrow", "aria-label": "became", text: "→"}), status(c.to), el("span", {class: "why", text: c.why})));
-    const io = [];
-    if (d.entered.length) io.push("New in latest scan: " + d.entered.join(", "));
-    if (d.dropped.length) io.push("Dropped out: " + d.dropped.join(", "));
-    $("inout").textContent = io.join(" · ");
 
     const fb = $("filterBtns"); fb.replaceChildren();
     const mk = (key, text, n) => {
