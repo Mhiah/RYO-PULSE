@@ -19,16 +19,16 @@ h1 .hl{display:inline-block;line-height:1.08;margin:.08em 0;background:var(--acc
 .lede{font-size:18px;color:var(--muted);max-width:34em;margin:0 0 26px}
 .cta{display:flex;flex-wrap:wrap;gap:10px}
 
-.live-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px}
-.live-card header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.live-card h2{font-size:14px;margin:0;color:var(--muted);font-weight:700}
-.strip-row{display:grid;grid-template-columns:5.5em 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.live-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;width:100%;max-width:460px;justify-self:end;align-self:start;margin-top:64px}
+.live-card header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.live-card h2{font-size:13px;margin:0;color:var(--muted);font-weight:700}
+.strip-row{display:grid;grid-template-columns:5em 1fr auto;gap:10px;align-items:center;padding:5px 0;border-top:1px solid var(--line);font-size:14px}
 .strip-row:first-of-type{border-top:0}
 .strip-row .tok{font-weight:800;font-variant-numeric:tabular-nums}
 .cells{display:flex;gap:3px;min-width:0;overflow:hidden}
-.cells i{flex:0 0 10px;height:22px;border-radius:3px;background:var(--cell-off)}
+.cells i{flex:0 0 8px;height:16px;border-radius:2px;background:var(--cell-off)}
 .cells i.on{background:var(--cell-on);box-shadow:inset 0 0 0 1.5px var(--cell-edge)}
-.live-card footer{margin-top:12px;color:var(--muted);font-size:13px}
+.live-card footer{margin-top:8px;color:var(--muted);font-size:12px}
 .empty{color:var(--muted);font-size:14px;padding:20px 0}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:28px 0 0}
@@ -74,6 +74,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
 
 @media (max-width:960px){
   .hero .wrap{grid-template-columns:1fr}
+  .live-card{justify-self:stretch;max-width:none;margin-top:0}
   .statuses{grid-template-columns:repeat(2,1fr)}
   .rules,.steps{grid-template-columns:1fr}
 }
@@ -239,7 +240,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
     );
     const live = d.provenance === "live";
     $("srcPill").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? "Live RYO data" : (d.provenance === "none" ? "No data yet" : d.provenance + " data")));
-    const rows = (d.rows || []).slice().sort((a, b) => (b.hit_ratio || 0) - (a.hit_ratio || 0) || (b.streak - a.streak)).slice(0, 6);
+    const rows = (d.rows || []).slice().sort((a, b) => (b.hit_ratio || 0) - (a.hit_ratio || 0) || (b.streak - a.streak)).slice(0, 5);
     const box = $("strips");
     if (!rows.length) {
       box.replaceChildren(el("p", {class: "empty"}, "No scans yet. Start collecting with ", el("code", {text: "ryo-pulse collect -p top_n=20 --every 30"}), "."));
