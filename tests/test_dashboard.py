@@ -98,3 +98,9 @@ def test_http_page_and_api(server):
     code, _, body = get(server + "/api/board?min_valid=abc")
     assert code == 400 and "bad setting" in json.loads(body)["error"]
     assert get(server + "/nope")[0] == 404
+
+
+def test_mood_uses_latest_scan_that_has_one():
+    snaps = make([["A"], ["A"], ["A"]])
+    snaps[1].context["regime"] = "neutral"
+    assert build_board(snaps)["scans"]["regime"] == "neutral"

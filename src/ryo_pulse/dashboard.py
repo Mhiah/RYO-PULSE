@@ -41,6 +41,14 @@ def _iso(dt: datetime | None) -> str | None:
     return dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") if dt else None
 
 
+def _latest_regime(snapshots: list[Snapshot], phash: str) -> str | None:
+    """Most recent market mood among good scans (a scan without one doesn't blank the tile)."""
+    for s in sorted(snapshots, key=lambda x: x.captured_at, reverse=True):
+        if s.ok and s.profile.hash == phash and s.context.get("regime"):
+            return s.context["regime"]
+    return None
+
+
 def build_board(
     snapshots: list[Snapshot],
     thresholds: PulseThresholds | None = None,
@@ -134,7 +142,7 @@ def build_board(
             "latest_at": _iso(latest.captured_at) if latest else None,
             "latest_ok": bool(latest and latest.ok and latest.profile.hash == phash),
             "latest_error": latest.error if latest and not latest.ok else None,
-            "regime": latest_valid.context.get("regime") if latest_valid else None,
+            "regime": _latest_regime(snapshots, phash),
         },
         "timeline": [
             {
