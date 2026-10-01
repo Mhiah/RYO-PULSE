@@ -61,18 +61,21 @@ ryo-pulse serve --fixture tests/fixtures/demo_window.json   # offline demo (labe
 ryo-pulse serve --lan                # also open it from a phone on the same Wi-Fi (prints the address)
 ```
 
-![Landing page, night mode](docs/landing.png)
+On Windows, if `ryo-pulse` isn't found, run it from the repo folder with `$env:PYTHONPATH="src"; python -m ryo_pulse serve`. The server reads the page files when it starts, so restart it after pulling changes.
+
+![Landing page](docs/landing.png)
 
 ![Dashboard on the labelled synthetic fixture](docs/dashboard-fixture.png)
 
-A local, read-only screen for **configuring and monitoring** the Pulse skill. It answers "what changed and why" at a glance:
+A local, read-only screen for **configuring and monitoring** the Pulse skill. Its headline is the question it answers: **What changed and why**.
 
-- **What changed since the last scan** comes first: status transitions (for example `persistent → transient`) with the reason, plus the tokens that entered or dropped out of the newest scan.
+- **At a glance:** four tiles for good scans and coverage, the last scan, RYO's market mood and the scan settings in plain words (for example "Top 20"), plus a LIVE or FIXTURE DATA badge.
+- **What changed since the last scan** comes next: status transitions (for example `persistent → transient`) with the reason, plus the tokens that entered or dropped out of the newest scan.
 - **Tokens, most important first:** emerging, then persistent, transient and absent. Each row has hits, streak, current rank, a presence strip of the last 24 good scans and a plain-language *why*. Expand a row for every reason, a `ryo-pulse pulse` command to reproduce it and the `replay_hash`.
 - **Scan health:** ok, failed and drifted scans over time, plus a banner when the latest scan failed. Failures are never shown as absence.
-- **Settings:** window size, the four thresholds and a watchlist pinned to the top. These are saved per browser, sent to the same engine the skill uses, and the page refreshes every 60 s.
-- **Landing page** at `/` with live stats from your scan store and a "most persistent right now" card. The dashboard is at `/board`.
-- **Look:** a dark site with the accent colour `#c5ff4a`. The landing page alternates dark and light bands as you scroll.
+- **Settings:** a Settings button in the top bar (or `s`) opens a popup for window size, the four thresholds and a watchlist pinned to the top. Empty boxes show the values in use. Settings are saved per browser and sent to the same engine the skill uses. The page refreshes every 60 s.
+- **Landing page** at `/`: the idea in one screen, a "most persistent right now" card and live stats from your scan store, then how it works and why it won't invent absence. The dashboard is at `/board`.
+- **Look:** a dark site with the accent colour `#c5ff4a` and a bundled font, so it looks the same on Windows, Mac and phones. The landing page alternates dark and light bands as you scroll.
 - **Works for everyone:** keyboard-only use (`/` find, `r` refresh, `s` settings, `1`–`5` status filters, Tab and Enter on rows), status shown by text and shape and not by colour alone, a skip link, live-region updates, and phone width (tokens become cards on a phone).
 
 It never calls RYO and has no new dependencies (Python stdlib server + plain HTML/CSS/JS, no build step, no external assets). Every number on screen comes from `engine.classify`, so the skill (Track 3) and the interface (Track 2) can each be judged on their own.
@@ -134,6 +137,5 @@ docs/           design + JSON schemas
 - Written during the event window (Aug 18 – Oct 3, 2026 JST). No starter template was used.
 - Third-party libraries: [pydantic](https://docs.pydantic.dev/), [httpx](https://www.python-httpx.org/), [rich](https://github.com/Textualize/rich), [pytest](https://pytest.org/).
 - Bundled font: [DejaVu Sans](https://dejavu-fonts.github.io/) (Bitstream Vera license, see `src/ryo_pulse/web/fonts/LICENSE.txt`), subset to Latin so the site looks the same on every OS.
-- AI assistance: built with Claude Code.
 - `tests/fixtures/demo_window.json` is **synthetic** test data, and is labelled so in the file and in every result it produces. Live demos use snapshots collected from RYO with `ryo-pulse collect`.
 - No secrets are committed. Use `.env.example` and keep your real `.env` local.
