@@ -31,7 +31,9 @@ a{color:var(--accent-text)}
 .skip{position:absolute;left:-999px;top:8px;background:var(--panel);color:var(--ink);padding:8px 12px;z-index:20;border-radius:6px}
 .skip:focus{left:8px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+/* side margin: roomy on phones, wider on big screens */
+:root{--gutter:clamp(24px,5vw,40px)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
 
 /* top bar */
 .topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
