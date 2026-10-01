@@ -63,9 +63,9 @@ ryo-pulse serve --lan                # also open it from a phone on the same Wi-
 
 On Windows, if `ryo-pulse` isn't found, run it from the repo folder with `$env:PYTHONPATH="src"; python -m ryo_pulse serve`. The server reads the page files when it starts, so restart it after pulling changes.
 
-![Landing page](docs/landing.png)
+![Landing page on live RYO scans](docs/landing.png)
 
-![Dashboard on the labelled synthetic fixture](docs/dashboard-fixture.png)
+![Dashboard on live RYO scans, Oct 1 2026 (top 20, 7 good scans)](docs/dashboard-live.png)
 
 A local, read-only screen for **configuring and monitoring** the Pulse skill. Its headline is the question it answers: **What changed and why**.
 
