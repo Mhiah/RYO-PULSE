@@ -4,6 +4,8 @@
 
 > **RYO-CHAN Hackathon 2026 · Track 3 (New Skills) + Track 2 (Dashboards & Interfaces)**
 
+**Try it:** [ryo-pulse.vercel.app](https://ryo-pulse.vercel.app/), the dashboard over 114 real RYO scans saved Sep 27 to Oct 2 (a saved copy, so it doesn't update; run it locally for live data).
+
 RYO Pulse is one product entered in two tracks:
 
 | Track | What we built | Where |
