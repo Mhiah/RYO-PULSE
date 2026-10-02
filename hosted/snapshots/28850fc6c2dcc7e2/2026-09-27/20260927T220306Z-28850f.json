@@ -1,0 +1,16 @@
+{
+  "snapshot_id": "20260927T220306Z-28850f",
+  "captured_at": "2026-09-27T22:03:06Z",
+  "profile": {
+    "tool": "scan_market",
+    "params": {
+      "top_n": 20
+    }
+  },
+  "ok": false,
+  "error": "RYO reported status 'unavailable': No candidates matched the current scan filters.",
+  "tokens": [],
+  "source": "live",
+  "context": {},
+  "raw_sha256": null
+}

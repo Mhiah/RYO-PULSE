@@ -1,0 +1,39 @@
+{
+  "snapshot_id": "20261001T181307Z-28850f",
+  "captured_at": "2026-10-01T18:13:07Z",
+  "profile": {
+    "tool": "scan_market",
+    "params": {
+      "top_n": 20
+    }
+  },
+  "ok": true,
+  "error": null,
+  "tokens": [
+    "龙虾",
+    "CAP",
+    "MON",
+    "BP",
+    "DGAI",
+    "SHX",
+    "OMI",
+    "TRUMP",
+    "JASMY",
+    "W",
+    "FUN",
+    "UAI",
+    "VELO",
+    "FET",
+    "RE",
+    "PURR",
+    "ZRO",
+    "MSTRB",
+    "AAVE",
+    "SPCXB"
+  ],
+  "source": "live",
+  "context": {
+    "regime": "neutral"
+  },
+  "raw_sha256": "f4af26d9a22a641ce33ba36c5b5fab1628f3603af272c2ead6ec19b425be8978"
+}

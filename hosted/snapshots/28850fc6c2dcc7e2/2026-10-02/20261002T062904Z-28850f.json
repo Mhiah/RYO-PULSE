@@ -1,0 +1,37 @@
+{
+  "snapshot_id": "20261002T062904Z-28850f",
+  "captured_at": "2026-10-02T06:29:04Z",
+  "profile": {
+    "tool": "scan_market",
+    "params": {
+      "top_n": 20
+    }
+  },
+  "ok": true,
+  "error": null,
+  "tokens": [
+    "CARDS",
+    "UAI",
+    "DGAI",
+    "DEXE",
+    "SUPER",
+    "ZRO",
+    "CAP",
+    "OMI",
+    "MSTRB",
+    "AI",
+    "AAVE",
+    "WIF",
+    "TRUMP",
+    "HUMA",
+    "W",
+    "ZK",
+    "SAND",
+    "SPCXB",
+    "BULLA",
+    "CRCLX"
+  ],
+  "source": "live",
+  "context": {},
+  "raw_sha256": "b0bd78dced0cbae3cf4edf62dc82f4c77b89bd840701463e79746949d81c1432"
+}

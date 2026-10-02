@@ -1,0 +1,39 @@
+{
+  "snapshot_id": "20261001T111235Z-28850f",
+  "captured_at": "2026-10-01T11:12:35Z",
+  "profile": {
+    "tool": "scan_market",
+    "params": {
+      "top_n": 20
+    }
+  },
+  "ok": true,
+  "error": null,
+  "tokens": [
+    "CET",
+    "龙虾",
+    "BP",
+    "KNTQ",
+    "BTW",
+    "CAP",
+    "AGT",
+    "SHX",
+    "NIGHT",
+    "STX",
+    "MON",
+    "JASMY",
+    "DGAI",
+    "PURR",
+    "HUMA",
+    "TRUMP",
+    "W",
+    "FET",
+    "FUN",
+    "VELO"
+  ],
+  "source": "live",
+  "context": {
+    "regime": "neutral"
+  },
+  "raw_sha256": "791c2ec8525d218a5c12262d9c9a3ff643d886c0bd5bb0c7ee46a9aa01c6ebbf"
+}

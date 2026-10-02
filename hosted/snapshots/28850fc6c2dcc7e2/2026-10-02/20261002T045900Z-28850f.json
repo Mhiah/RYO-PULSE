@@ -1,0 +1,37 @@
+{
+  "snapshot_id": "20261002T045900Z-28850f",
+  "captured_at": "2026-10-02T04:59:00Z",
+  "profile": {
+    "tool": "scan_market",
+    "params": {
+      "top_n": 20
+    }
+  },
+  "ok": true,
+  "error": null,
+  "tokens": [
+    "AI",
+    "UAI",
+    "SUPER",
+    "DGAI",
+    "CAP",
+    "OMI",
+    "CARDS",
+    "AAVE",
+    "JASMY",
+    "MSTRB",
+    "ZRO",
+    "WIF",
+    "HUMA",
+    "TRUMP",
+    "PURR",
+    "PEPE",
+    "W",
+    "CRCLX",
+    "FET",
+    "STONK"
+  ],
+  "source": "live",
+  "context": {},
+  "raw_sha256": "94529807bfff07cf6dd9f2907a0ebdf1256687c974395a640abd464088e32ecf"
+}
