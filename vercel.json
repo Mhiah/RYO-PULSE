@@ -1,0 +1,4 @@
+{
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index?route=$1" }],
+  "functions": { "api/index.py": { "includeFiles": "{src/ryo_pulse/**,hosted/snapshots/**}" } }
+}

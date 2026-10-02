@@ -222,7 +222,7 @@ form.grid .hint{color:var(--muted);font-size:12px}
   function render() {
     const d = data, s = d.scans;
     const live = d.provenance === "live";
-    $("source").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? "Live RYO data" : (d.provenance + " data")));
+    $("source").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? (d.hosted ? "Real RYO scans · saved copy" : "Live RYO data") : (d.provenance + " data")));
     const fact = (label, value, note, title) => el("div", {class: "fact", title: title || ""}, el("dt", {text: label}), el("dd", {}, value, note ? el("small", {text: note}) : null));
     $("meta").replaceChildren(
       fact("Good scans", `${s.valid} of ${s.total}`, `${Math.round(s.coverage * 100)}% coverage`),

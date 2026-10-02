@@ -173,7 +173,8 @@ def _params(query: dict[str, list[str]]) -> tuple[PulseThresholds, int | None, l
     return th, window, watch
 
 
-def make_handler(load: Callable[[], list[Snapshot]]) -> type[BaseHTTPRequestHandler]:
+def make_handler(load: Callable[[], list[Snapshot]], hosted: bool = False) -> type[BaseHTTPRequestHandler]:
+    """hosted=True marks the board as a public copy of saved scans (no collector behind it)."""
     web = resources.files("ryo_pulse").joinpath("web")
     pages = {
         "/": ("landing.html", "text/html; charset=utf-8"),
@@ -214,7 +215,10 @@ def make_handler(load: Callable[[], list[Snapshot]]) -> type[BaseHTTPRequestHand
                     snaps = load()
                 except Exception as exc:  # a bad file in the store should not take the page down
                     return self._json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": f"could not read snapshots: {exc}"})
-                return self._json(HTTPStatus.OK, build_board(snaps, th, window, watch))
+                board = build_board(snaps, th, window, watch)
+                if hosted:
+                    board["hosted"] = True
+                return self._json(HTTPStatus.OK, board)
             return self._json(HTTPStatus.NOT_FOUND, {"error": "not found"})
 
         def log_message(self, fmt: str, *args: Any) -> None:  # keep the collector's terminal quiet
