@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RYO Pulse · Dashboard</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23c5ff4a'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%230f1600' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%232554C7'/%3E%3Cpath d='M5 17h5l3-7 5 13 3-6h6' fill='none' stroke='%23FFFFFF' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="/static/theme.css">
 <style>
 header.page,main{max-width:1180px;margin:0 auto;padding:16px var(--gutter)}
@@ -32,10 +32,11 @@ main section{background:var(--panel);border:1px solid var(--line);border-radius:
 .inout{margin:10px 0 0;color:var(--muted);font-size:14px}
 .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
 #filterBtns{display:flex;flex-wrap:wrap;gap:10px}
-.filters button,.sbtn{font:inherit;font-size:14px;font-weight:600;background:var(--chip);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:6px 12px;cursor:pointer}
+.filters button,.sbtn{font:inherit;font-size:14px;font-weight:600;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:6px 12px;cursor:pointer}
 .filters button:hover,.sbtn:hover{border-color:var(--muted)}
 .filters button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800}
 .sbtn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:800}
+.sbtn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
 .filters input{font:inherit;padding:5px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);min-width:12em}
 .tablewrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
@@ -62,7 +63,7 @@ code{word-break:break-all}
 .title{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
 dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px 28px;width:min(640px,calc(100vw - 32px))}
 .note{margin:0 2px;font-size:14px}
-dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(17,17,17,.45)}
 dialog h2{font-size:20px;margin:0 0 4px}
 dialog > p{margin:0}
 .actions{grid-column:1/-1;margin-top:6px;display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
@@ -95,7 +96,7 @@ form.grid .hint{color:var(--muted);font-size:12px}
 <div class="topbar">
   <div class="wrap">
     <a class="brand" href="/" aria-label="RYO Pulse home">
-      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 13h4l2.5-6 4 11 2.5-5H22" fill="none" stroke="#0f1600" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 13h4l2.5-6 4 11 2.5-5H22" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       RYO Pulse
     </a>
     <nav class="nav" aria-label="Main">

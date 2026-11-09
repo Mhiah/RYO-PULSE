@@ -1,26 +1,16 @@
-/* RYO Pulse shared theme. Accent #c5ff4a. The site is dark; sections marked .tone-light switch to the light palette. */
+/* RYO Pulse shared theme: white, black and royal blue. Solid colours only: no gradients, glows or blur. */
 :root{
-  --accent:#c5ff4a;            /* fills, highlights */
-  --accent-ink:#0f1600; --accent-text:#c5ff4a; --accent-soft:#1d2610;
-  --bg:#0b0d09; --bg-2:#11140e; --panel:#141811; --ink:#eef3e6; --muted:#9aa58e; --line:#262d1f; --chip:#1b2116;
-  --focus:#c5ff4a;
-  --persistent:#c5ff4a; --emerging:#7fd3ff; --transient:#f5b84a; --absent:#8e9884; --insufficient:#ff8a7a;
-  --ok:#9be22f; --fail:#ff6b5b; --drift:#f5b84a;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 32px rgba(0,0,0,.35);
-  --cell-on:#c5ff4a; --cell-edge:transparent; --cell-off:#262d1f;
-  color-scheme:dark;
-}
-/* A light band inside the dark page: same token names, light values, so every component just works. */
-.tone-light{
-  --accent-ink:#0f1600; --accent-text:#3c5a00; --accent-soft:#eefbd2;
-  --bg:#f6f7f2; --bg-2:#eceee6; --panel:#ffffff; --ink:#12160d; --muted:#5a6152; --line:#dcdfd4; --chip:#eff1ea;
-  --focus:#3c5a00;
-  --persistent:#2f6b00; --emerging:#005f8a; --transient:#8a5a00; --absent:#5a6152; --insufficient:#a3241c;
-  --ok:#3f8a00; --fail:#c0392b; --drift:#b07a00;
-  --shadow:0 1px 2px rgba(18,22,13,.06),0 8px 24px rgba(18,22,13,.06);
-  --cell-on:#c5ff4a; --cell-edge:#3c5a00; --cell-off:#dcdfd4;
+  --accent:#2554C7;            /* brand blue: buttons, links, active nav, focus */
+  --accent-hover:#1D429F; --accent-ink:#FFFFFF; --accent-text:#2554C7; --accent-soft:#DCE7FF;
+  --bg:#FAF9F6; --header:#FFFFFF; --panel:#FFFFFF; --ink:#111111; --muted:#555861; --line:#DADDE2; --chip:#FAF9F6;
+  --hl-bg:#DCE7FF; --hl-ink:#111111;
+  --focus:#2554C7;
+  /* status labels keep their own meaning (shape + colour); blue stays for things you can click */
+  --persistent:#1E7A46; --emerging:#0E7490; --transient:#8A5A00; --absent:#555861; --insufficient:#B3261E;
+  --ok:#1E7A46; --fail:#B3261E; --drift:#B07A00;
+  --shadow:0 1px 2px rgba(17,17,17,.06);
+  --cell-on:#2554C7; --cell-edge:transparent; --cell-off:#DADDE2;
   color-scheme:light;
-  background:var(--bg);color:var(--ink);
 }
 /* Bundled font so the site looks the same on Windows, Mac and Linux (DejaVu Sans, see fonts/LICENSE.txt). */
 @font-face{font-family:"Pulse Sans";src:url("/static/fonts/DejaVuSans.woff2") format("woff2");font-weight:100 550;font-display:swap}
@@ -30,7 +20,7 @@ html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Pulse Sans","DejaVu Sans","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;}
 a{color:var(--accent-text)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
-::selection{background:var(--accent);color:var(--accent-ink)}
+::selection{background:var(--accent-soft);color:var(--ink)}
 .skip{position:absolute;left:-999px;top:8px;background:var(--panel);color:var(--ink);padding:8px 12px;z-index:20;border-radius:6px}
 .skip:focus{left:8px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -40,7 +30,7 @@ a{color:var(--accent-text)}
 .wrap{max-width:1180px;margin:0 auto;padding:0 var(--gutter)}
 
 /* top bar */
-.topbar{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 85%,transparent);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.topbar{position:sticky;top:0;z-index:10;background:var(--header);border-bottom:1px solid var(--line)}
 .topbar .wrap{display:flex;align-items:center;gap:12px;min-height:60px}
 .brand{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.01em;color:var(--ink);text-decoration:none}
 .logo{width:30px;height:30px;border-radius:9px;background:var(--accent);display:grid;place-items:center}
@@ -48,13 +38,13 @@ a{color:var(--accent-text)}
 .nav{display:flex;gap:4px;margin-left:auto;align-items:center}
 .nav a{color:var(--muted);text-decoration:none;font-weight:600;font-size:14px;padding:7px 10px;border-radius:8px}
 .nav a:hover{color:var(--ink);background:var(--chip)}
-.nav a[aria-current="page"]{color:var(--ink);background:var(--chip)}
+.nav a[aria-current="page"]{color:var(--accent-text);background:var(--accent-soft)}
 
 /* buttons */
-.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:14px;line-height:1;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--chip);color:var(--ink);cursor:pointer;text-decoration:none}
+.btn{display:inline-flex;align-items:center;gap:8px;font:inherit;font-weight:700;font-size:14px;line-height:1;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;text-decoration:none}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.btn.primary:hover{filter:brightness(.95)}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
 .btn.lg{padding:14px 20px;font-size:16px;border-radius:12px}
 
 /* status labels: text + shape, never colour alone */
@@ -67,7 +57,7 @@ a{color:var(--accent-text)}
 .st.insufficient{color:var(--insufficient)} .st.insufficient::before{background:var(--insufficient)}
 
 .pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase}
-.pill.live{background:var(--accent);color:var(--accent-ink)}
+.pill.live{background:var(--accent-soft);color:var(--accent-hover)}
 .pill.fixture{background:transparent;color:var(--insufficient);border:1px solid currentColor}
 .pill .dot{width:7px;height:7px;border-radius:50%;background:currentColor}
 .pill.live .dot{animation:pulse 1.8s ease-in-out infinite}

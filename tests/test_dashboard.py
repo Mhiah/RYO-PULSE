@@ -87,7 +87,7 @@ def test_http_page_and_api(server):
     code, ctype, body = get(server + "/board")
     assert code == 200 and "text/html" in ctype and b"What changed since the last scan" in body
     code, ctype, body = get(server + "/static/theme.css")
-    assert code == 200 and "text/css" in ctype and b"#c5ff4a" in body
+    assert code == 200 and "text/css" in ctype and b"#2554C7" in body
     assert get(server + "/static/theme.js")[0] == 404  # no day/night toggle any more
     code, ctype, body = get(server + "/static/fonts/DejaVuSans-Bold.woff2")
     assert code == 200 and ctype == "font/woff2" and body[:4] == b"wOF2"
