@@ -15,6 +15,15 @@ RYO Pulse is one product entered in two tracks:
 
 The skill is the engine; the dashboard is how people see and steer it. Every number on the dashboard comes from the same skill, and each half can also be judged on its own.
 
+## Hackathon submission
+
+| | |
+|---|---|
+| Submission form | [submission-form.pdf](submission-form.pdf) |
+| Demo video (2:38) | [Watch on OneDrive](https://1drv.ms/v/c/0328d6730c05f4c7/IQD9U4l6f6l1RI4HrTio51GSAcHKinmWAF82OwUjiJ5rw2U?e=sHCzjh) |
+| Live dashboard | [ryo-pulse.vercel.app](https://ryo-pulse.vercel.app/) (saved copy of real scans) |
+| Tracks | Track 3 (New Skills) + Track 2 (Dashboards & Interfaces) |
+
 ## The skill (Track 3)
 
 Given a token and a window of **comparable** `scan_market` snapshots (same scan profile), the skill returns one status:
