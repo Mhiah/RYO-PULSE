@@ -221,11 +221,11 @@ docs/           design + JSON schemas
 
 ## Demo video
 
-Link: *added at submission.* The script is in [DEMO.md](DEMO.md).
+[Watch the demo (2:38)](https://1drv.ms/v/c/0328d6730c05f4c7/IQD9U4l6f6l1RI4HrTio51GSAcHKinmWAF82OwUjiJ5rw2U?e=sHCzjh). Narration uses the open Kokoro-82M text-to-speech model; captions are burned in.
 
 ## Limitations
 
-- Runs locally. The dashboard reads the snapshot store on the machine running `ryo-pulse collect`; there is no hosted version.
+- Live data needs a local run. The dashboard reads the snapshot store on the machine running `ryo-pulse collect`; the hosted copy at [ryo-pulse.vercel.app](https://ryo-pulse.vercel.app/) shows saved real scans and does not update.
 - Pulse needs history: it says *insufficient* until there are at least 3 good comparable scans and 60% coverage. Collect for a few hours before judging persistence.
 - The "Market mood" tile shows "–" for scans taken before this was added, or if `market_overview` has no regime or Fear & Greed label.
 - The tool definition (`scan_persistence`) follows the MCP tool shape; it will be aligned with RYO's official skill spec once published.
@@ -236,4 +236,6 @@ Link: *added at submission.* The script is in [DEMO.md](DEMO.md).
 - Third-party libraries: [pydantic](https://docs.pydantic.dev/), [httpx](https://www.python-httpx.org/), [rich](https://github.com/Textualize/rich), [pytest](https://pytest.org/).
 - Bundled font: [DejaVu Sans](https://dejavu-fonts.github.io/) (Bitstream Vera license, see `src/ryo_pulse/web/fonts/LICENSE.txt`), subset to Latin so the site looks the same on every OS.
 - `tests/fixtures/demo_window.json` is **synthetic** test data, and is labelled so in the file and in every result it produces. Live demos use snapshots collected from RYO with `ryo-pulse collect`.
+- Hosting: the public dashboard runs on [Vercel](https://vercel.com/) (`api/index.py`, `vercel.json`) over saved real scans in `hosted/snapshots/`, labelled as a saved copy.
+- Claude (Anthropic) was used as a coding assistant during the build.
 - No secrets are committed. Use `.env.example` and keep your real `.env` local.
