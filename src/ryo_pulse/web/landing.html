@@ -241,7 +241,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
       stat(ago(s.latest_at), "last scan"),
     );
     const live = d.provenance === "live";
-    $("srcPill").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? "Live RYO data" : (d.provenance === "none" ? "No data yet" : d.provenance + " data")));
+    $("srcPill").replaceChildren(el("span", {class: "pill " + (live ? "live" : "fixture")}, el("span", {class: "dot", "aria-hidden": "true"}), live ? (d.hosted ? "Saved real scans" : "Live RYO data") : (d.provenance === "none" ? "No data yet" : d.provenance + " data")));
     const rows = (d.rows || []).slice().sort((a, b) => (b.hit_ratio || 0) - (a.hit_ratio || 0) || (b.streak - a.streak)).slice(0, 5);
     const box = $("strips");
     if (!rows.length) {
@@ -253,7 +253,7 @@ footer.site .wrap{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space
         return el("div", {class: "strip-row"}, el("span", {class: "tok", text: r.token}), cells, el("span", {class: "st " + r.status, text: r.status}));
       }));
     }
-    $("liveFoot").textContent = s.total ? `${s.valid} of ${s.total} scans succeeded · ${Math.round((s.coverage || 0) * 100)}% coverage · from your local scan store` : "";
+    $("liveFoot").textContent = s.total ? `${s.valid} of ${s.total} scans succeeded · ${Math.round((s.coverage || 0) * 100)}% coverage · ${d.hosted ? "saved copy of real scans" : "from your local scan store"}` : "";
   }).catch(() => {
     $("strips").replaceChildren(el("p", {class: "empty", text: "Couldn't read the local scans. Is ryo-pulse serve running?"}));
   });
