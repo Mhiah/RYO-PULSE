@@ -21,6 +21,7 @@ The skill is the engine; the dashboard is how people see and steer it. Every num
 |---|---|
 | Submission form | [submission-form.pdf](submission-form.pdf) |
 | Demo video (2:38) | [Watch on OneDrive](https://1drv.ms/v/c/0328d6730c05f4c7/IQD9U4l6f6l1RI4HrTio51GSAcHKinmWAF82OwUjiJ5rw2U?e=sHCzjh) |
+| X post (old and new demo videos) | [x.com/myacxt](https://x.com/myacxt/status/2120487533167386764) |
 | Live dashboard | [ryo-pulse.vercel.app](https://ryo-pulse.vercel.app/) (saved copy of real scans) |
 | Tracks | Track 3 (New Skills) + Track 2 (Dashboards & Interfaces) |
 
@@ -230,7 +231,7 @@ docs/           design + JSON schemas
 
 ## Demo video
 
-[Watch the demo (2:38)](https://1drv.ms/v/c/0328d6730c05f4c7/IQD9U4l6f6l1RI4HrTio51GSAcHKinmWAF82OwUjiJ5rw2U?e=sHCzjh). Narration uses the open Kokoro-82M text-to-speech model; captions are burned in.
+[Watch the demo (2:38)](https://1drv.ms/v/c/0328d6730c05f4c7/IQD9U4l6f6l1RI4HrTio51GSAcHKinmWAF82OwUjiJ5rw2U?e=sHCzjh). Narration uses the open Kokoro-82M text-to-speech model; captions are burned in. The [X post](https://x.com/myacxt/status/2120487533167386764) has both the original and the new-look demo videos.
 
 ## Limitations
 
