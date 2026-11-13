@@ -14,6 +14,9 @@ import pytest
 sync_api = pytest.importorskip("playwright.sync_api")
 
 from ryo_pulse.dashboard import serve  # noqa: E402
+
+expect = sync_api.expect
+# wait_for_function evaluates a string, which the app's CSP (no unsafe-eval) rightly blocks; use locators
 from ryo_pulse.store import load_fixture  # noqa: E402
 
 ROOT = Path(__file__).parent.parent.parent
@@ -101,13 +104,13 @@ def test_dashboard_filters_search_details_and_settings(page, problems, local_url
     page.click("#openSettings")
     page.fill("input[name=watch]", "doge")
     page.locator("#settings button[type=submit]").click()
-    page.wait_for_function("document.querySelector('#rows .rowbtn').textContent === 'DOGE'")
+    expect(page.locator("#rows .rowbtn").first).to_have_text("DOGE")
     page.reload()
-    page.wait_for_function("document.querySelector('#rows .rowbtn').textContent === 'DOGE'")  # remembered
+    expect(page.locator("#rows .rowbtn").first).to_have_text("DOGE")  # remembered
     page.click("#openSettings")
     page.click("#reset")
     page.click("#closeSettings")
-    page.wait_for_function("document.querySelector('#rows .rowbtn').textContent !== 'DOGE'")
+    expect(page.locator("#rows .rowbtn").first).not_to_have_text("DOGE")
 
     # invalid setting gives a readable error, not a blank page
     page.click("#openSettings")
