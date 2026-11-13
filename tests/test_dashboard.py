@@ -1,13 +1,12 @@
 import json
 import threading
 import urllib.request
-from datetime import timedelta
 
 import pytest
 
-from conftest import BASE, PROFILE, make
+from conftest import make
 from ryo_pulse.dashboard import build_board, serve
-from ryo_pulse.models import PulseThresholds, ScanProfile, Snapshot
+from ryo_pulse.models import PulseThresholds
 from ryo_pulse.store import load_fixture
 
 
