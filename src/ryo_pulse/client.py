@@ -12,6 +12,7 @@ import random
 import re
 import time
 from typing import Any
+from urllib.parse import urlparse
 
 import httpx
 
@@ -40,7 +41,8 @@ class RyoClient:
         if not self.url:
             raise RyoError("RYO_MCP_URL is not set (see .env.example)")
         key = key if key is not None else os.environ.get("RYO_MCP_KEY", "")
-        if not self.url.startswith(("https://", "http://")):
+        if not self.url.startswith("https://") and not _is_local_http(self.url):
+            # the key goes in a header on every request; plain http would send it in clear text
             raise RyoError(f"RYO_MCP_URL must start with https:// (got '{self.url[:40]}')")
         header = (auth_header or os.environ.get("RYO_AUTH_HEADER") or "Authorization").strip()
         if not _HEADER_NAME.match(header):
@@ -65,7 +67,7 @@ class RyoClient:
                 resp = self._http.post(self.url, json=payload, headers=headers)
             except httpx.LocalProtocolError as exc:  # our request is malformed; retrying won't help
                 raise RyoError(f"invalid request to RYO: {exc}") from exc
-            except (httpx.TransportError, httpx.TimeoutException) as exc:
+            except httpx.RequestError as exc:  # network, timeout, bad encoding: all worth a retry
                 last = exc
             else:
                 if resp.status_code not in RETRY_STATUS:
@@ -121,6 +123,8 @@ class RyoClient:
         """Returns the tool's payload: structuredContent if present, else JSON-decoded text content."""
         self._ensure_init()
         result = self._rpc("tools/call", {"name": name, "arguments": arguments or {}}) or {}
+        if not isinstance(result, dict):
+            raise RyoError(f"{name} returned a malformed result")
         if result.get("isError"):
             raise RyoError(f"{name} returned an error: {_text_of(result)[:300]}")
         if "structuredContent" in result:
@@ -148,7 +152,18 @@ def _parse_rpc(resp: httpx.Response, want_id: int) -> dict[str, Any]:
                     msg = json.loads(line[5:].strip())
                 except json.JSONDecodeError:
                     continue
-                if msg.get("id") == want_id:
+                if isinstance(msg, dict) and msg.get("id") == want_id:
                     return msg
         raise RyoError("no JSON-RPC response in event stream")
-    return resp.json()
+    try:
+        msg = resp.json()
+    except ValueError as exc:  # e.g. an HTML error page with status 200 from a proxy
+        raise RyoError(f"RYO sent a response that is not JSON: {resp.text[:120]!r}") from exc
+    if not isinstance(msg, dict):
+        raise RyoError("RYO sent a JSON-RPC response that is not an object")
+    return msg
+
+
+def _is_local_http(url: str) -> bool:
+    host = urlparse(url).hostname or ""
+    return url.startswith("http://") and host in ("localhost", "127.0.0.1", "::1")
