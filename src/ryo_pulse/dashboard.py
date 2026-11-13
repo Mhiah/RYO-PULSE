@@ -6,7 +6,11 @@ and runs the same engine as the skill, so every number on screen is reproducible
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
+import math
+import re
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -27,6 +31,10 @@ IMPORTANCE = [
 ]
 PRESENCE_CELLS = 24
 # Reason codes that explain the status itself (others are context: failures, drift, regime, fixtures).
+# /api/board is public on the hosted site; each watched token costs two classify runs over every
+# snapshot, so an unbounded list lets one request burn the function's CPU budget.
+MAX_WATCH = 50
+MAX_SYMBOL_LEN = 32
 DECISION_CODES = {"REPEATED", "RECENT_ONLY", "FADED", "SPORADIC", "NEVER_SEEN", "TOO_FEW_SCANS", "LOW_COVERAGE"}
 
 
@@ -159,18 +167,52 @@ def _params(query: dict[str, list[str]]) -> tuple[PulseThresholds, int | None, l
         vals = query.get(name)
         return cast(vals[0]) if vals and vals[0] != "" else default
 
+    def finite(v: str) -> float:
+        x = float(v)
+        if not math.isfinite(x):
+            raise ValueError(f"{v!r} is not a finite number")
+        return x
+
     d = PulseThresholds()
     th = PulseThresholds(
         min_valid=one("min_valid", int, d.min_valid),
-        min_coverage=one("min_coverage", float, d.min_coverage),
-        persistent_ratio=one("persistent_ratio", float, d.persistent_ratio),
+        min_coverage=one("min_coverage", finite, d.min_coverage),
+        persistent_ratio=one("persistent_ratio", finite, d.persistent_ratio),
         persistent_min_hits=one("persistent_min_hits", int, d.persistent_min_hits),
     )
     window = one("window", int, None)
     if window is not None and window < 1:
         raise ValueError("window must be >= 1")
     watch = [w for w in one("watch", str, "").replace(" ", ",").split(",") if w.strip()]
+    if len(watch) > MAX_WATCH:
+        raise ValueError(f"watch lists at most {MAX_WATCH} tokens")
+    if any(len(w.strip()) > MAX_SYMBOL_LEN for w in watch):
+        raise ValueError(f"a watched token is longer than {MAX_SYMBOL_LEN} characters")
     return th, window, watch
+
+
+_INLINE = re.compile(rb"<(script|style)>(.*?)</\1>", re.S)
+
+
+def _csp(pages: list[bytes]) -> str:
+    """Content-Security-Policy that allows only this app's own files and its exact inline blocks."""
+    hashes: dict[bytes, set[str]] = {b"script": set(), b"style": set()}
+    for body in pages:
+        for kind, block in _INLINE.findall(body):
+            hashes[kind].add("'sha256-" + base64.b64encode(hashlib.sha256(block).digest()).decode() + "'")
+    return "; ".join(
+        [
+            "default-src 'none'",
+            "script-src " + " ".join(sorted(hashes[b"script"])),
+            "style-src 'self' " + " ".join(sorted(hashes[b"style"])),
+            "img-src 'self' data:",
+            "font-src 'self'",
+            "connect-src 'self'",
+            "base-uri 'none'",
+            "form-action 'none'",
+            "frame-ancestors 'none'",
+        ]
+    )
 
 
 def make_handler(load: Callable[[], list[Snapshot]], hosted: bool = False) -> type[BaseHTTPRequestHandler]:
@@ -185,6 +227,7 @@ def make_handler(load: Callable[[], list[Snapshot]], hosted: bool = False) -> ty
         "/static/fonts/DejaVuSans-Bold.woff2": ("fonts/DejaVuSans-Bold.woff2", "font/woff2"),
     }
     files = {route: (web.joinpath(name).read_bytes(), ctype) for route, (name, ctype) in pages.items()}
+    csp = _csp([body for body, ctype in files.values() if ctype.startswith("text/html")])
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "RyoPulse/0.1"
@@ -195,6 +238,9 @@ def make_handler(load: Callable[[], list[Snapshot]], hosted: bool = False) -> ty
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
             self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Content-Security-Policy", csp)
+            self.send_header("X-Frame-Options", "DENY")
+            self.send_header("Referrer-Policy", "no-referrer")
             self.end_headers()
             self.wfile.write(body)
 
@@ -214,7 +260,9 @@ def make_handler(load: Callable[[], list[Snapshot]], hosted: bool = False) -> ty
                 try:
                     snaps = load()
                 except Exception as exc:  # a bad file in the store should not take the page down
-                    return self._json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": f"could not read snapshots: {exc}"})
+                    # the public copy must not echo server paths or parser internals
+                    detail = "could not read snapshots" if hosted else f"could not read snapshots: {exc}"
+                    return self._json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": detail})
                 board = build_board(snaps, th, window, watch)
                 if hosted:
                     board["hosted"] = True
