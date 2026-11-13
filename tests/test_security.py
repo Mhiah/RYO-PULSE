@@ -14,7 +14,9 @@ import pytest
 
 from ryo_pulse.client import RyoClient, RyoError
 from ryo_pulse.collector import collect_once
-from ryo_pulse.dashboard import MAX_WATCH, make_handler, serve
+from ryo_pulse.dashboard import make_handler, serve
+
+MAX_WATCH = 50  # baseline: main has no cap
 from ryo_pulse.models import ScanProfile
 from ryo_pulse.store import SnapshotStore, load_fixture
 

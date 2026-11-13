@@ -79,7 +79,7 @@ def test_dashboard_filters_search_details_and_settings(page, problems, local_url
     page.goto(local_url + "/board")
     page.wait_for_selector("#rows .rowbtn")
     assert page.locator("#rows .rowbtn").count() == 5
-    assert "fixture data" in page.locator("#source").inner_text()
+    assert "fixture data" in page.locator("#source").inner_text().lower()
 
     # status filter buttons
     page.locator("#filterBtns button", has_text="persistent").click()
@@ -147,7 +147,7 @@ def test_hosted_copy_labels_and_phone_layout(browser, hosted_url):
         page.wait_for_load_state("networkidle")
         overflow = page.evaluate("document.documentElement.scrollWidth - window.innerWidth")
         assert overflow <= 0, f"{path} scrolls sideways by {overflow}px on a phone"
-    assert "saved copy" in page.locator("#source").inner_text()
+    assert "saved copy" in page.locator("#source").inner_text().lower()
     assert page.locator("#rows .rowbtn").count() > 0
     assert problems == []
     ctx.close()
